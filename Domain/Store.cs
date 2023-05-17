@@ -5,21 +5,34 @@ namespace Domain;
 
 public class Store
 {
-    public int StoreId { get; set; }
+    public Store(int storeId, string storeName, string? phone, string? email, string? street, string? city, string? state, string? zipCode)
+    {
+        StoreId = storeId;
+        StoreName = storeName;
+        Phone = phone;
+        Email = email;
+        Street = street;
+        City = city;
+        State = state;
+        ZipCode = zipCode;
 
-    public string StoreName { get; set; } = null!;
+    }
 
-    public string? Phone { get; set; }
+    public int StoreId { get; private set; }
 
-    public string? Email { get; set; }
+    public string StoreName { get; private set; } = null!;
 
-    public string? Street { get; set; }
+    public string? Phone { get; private set; }
 
-    public string? City { get; set; }
+    public string? Email { get; private set; }
 
-    public string? State { get; set; }
+    public string? Street { get; private set; }
 
-    public string? ZipCode { get; set; }
+    public string? City { get; private set; }
+
+    public string? State { get; private set; }
+
+    public string? ZipCode { get; private set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 

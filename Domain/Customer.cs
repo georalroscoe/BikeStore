@@ -5,23 +5,37 @@ namespace Domain;
 
 public class Customer
 {
-    public int CustomerId { get; set; }
+    public Customer(int customerId, string firstName, string lastName, string? phone, string email, string? street, string? city, string? state, string? zipCode)
+    {
+        CustomerId = customerId;
+        FirstName = firstName;
+        LastName = lastName;
+        Phone = phone;
+        Email = email;
+        Street = street;
+        City = city;
+        State = state;
+        ZipCode = zipCode;
+       
+    }
 
-    public string FirstName { get; set; } = null!;
+    public int CustomerId { get; private set; }
 
-    public string LastName { get; set; } = null!;
+    public string FirstName { get; private set; } = null!;
 
-    public string? Phone { get; set; }
+    public string LastName { get; private set; } = null!;
 
-    public string Email { get; set; } = null!;
+    public string? Phone { get; private set; }
 
-    public string? Street { get; set; }
+    public string Email { get; private set; } = null!;
 
-    public string? City { get; set; }
+    public string? Street { get; private set; }
 
-    public string? State { get; set; }
+    public string? City { get; private set; }
 
-    public string? ZipCode { get; set; }
+    public string? State { get; private set; }
+
+    public string? ZipCode { get; private set; }
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

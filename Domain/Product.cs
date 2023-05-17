@@ -5,17 +5,29 @@ namespace Domain;
 
 public class Product
 {
-    public int ProductId { get; set; }
 
-    public string ProductName { get; set; } = null!;
+    public Product(int productId, string productName, int brandId, int categoryId, short modelYear, decimal listPrice)
+    {
+        ProductId = productId;
+        ProductName = productName;
+        BrandId = brandId;
+        CategoryId = categoryId;
+        ModelYear = modelYear;
+        ListPrice = listPrice;
+       
+    }
 
-    public int BrandId { get; set; }
+    public int ProductId { get; private set; }
 
-    public int CategoryId { get; set; }
+    public string ProductName { get; private set; } = null!;
 
-    public short ModelYear { get; set; }
+    public int BrandId { get; private set; }
 
-    public decimal ListPrice { get; set; }
+    public int CategoryId { get; private set; }
+
+    public short ModelYear { get; private set; }
+
+    public decimal ListPrice { get; private set; }
 
     public virtual Brand Brand { get; set; } = null!;
 

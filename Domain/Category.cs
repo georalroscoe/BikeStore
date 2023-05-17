@@ -5,9 +5,16 @@ namespace Domain;
 
 public class Category
 {
-    public int CategoryId { get; set; }
+    public Category(int categoryId, string categoryName)
+    {
+        CategoryId = categoryId;
+        CategoryName = categoryName;
+        
+    }
 
-    public string CategoryName { get; set; } = null!;
+    public int CategoryId { get; private set; }
+
+    public string CategoryName { get; private set; } = null!;
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

@@ -5,17 +5,28 @@ namespace Domain;
 
 public partial class OrderItem
 {
-    public int OrderId { get; set; }
+    public OrderItem(int orderId, int itemId, int productId, int quantity, decimal listPrice, decimal discount)
+    {
+        OrderId = orderId;
+        ItemId = itemId;
+        ProductId = productId;
+        Quantity = quantity;
+        ListPrice = listPrice;
+        Discount = discount;
+        
+    }
 
-    public int ItemId { get; set; }
+    public int OrderId { get; private set; }
 
-    public int ProductId { get; set; }
+    public int ItemId { get; private set; }
 
-    public int Quantity { get; set; }
+    public int ProductId { get; private set; }
 
-    public decimal ListPrice { get; set; }
+    public int Quantity { get; private set; }
 
-    public decimal Discount { get; set; }
+    public decimal ListPrice { get; private set; }
+
+    public decimal Discount { get; private set; }
 
     public virtual Order Order { get; set; } = null!;
 

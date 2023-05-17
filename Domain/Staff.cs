@@ -5,21 +5,34 @@ namespace Domain;
 
 public class Staff
 {
-    public int StaffId { get; set; }
+    public Staff(int staffId, string firstName, string lastName, string email, string? phone, byte active, int storeId, int? managerId)
+    {
+        StaffId = staffId;
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        Phone = phone;
+        Active = active;
+        StoreId = storeId;
+        ManagerId = managerId;
+       
+    }
 
-    public string FirstName { get; set; } = null!;
+    public int StaffId { get; private set; }
 
-    public string LastName { get; set; } = null!;
+    public string FirstName { get; private set; } = null!;
 
-    public string Email { get; set; } = null!;
+    public string LastName { get; private set; } = null!;
 
-    public string? Phone { get; set; }
+    public string Email { get; private set; } = null!;
 
-    public byte Active { get; set; }
+    public string? Phone { get; private set; }
 
-    public int StoreId { get; set; }
+    public byte Active { get; private set; }
 
-    public int? ManagerId { get; set; }
+    public int StoreId { get; private set; }
+
+    public int? ManagerId { get; private set; }
 
     public virtual ICollection<Staff> InverseManager { get; set; } = new List<Staff>();
 

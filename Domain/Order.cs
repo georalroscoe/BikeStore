@@ -5,21 +5,35 @@ namespace Domain;
 
 public class Order
 {
-    public int OrderId { get; set; }
 
-    public int? CustomerId { get; set; }
+    public Order(int orderId, int? customerId, byte orderStatus, DateTime orderDate, DateTime requiredDate, DateTime? shippedDate, int storeId, int staffId)
+    {
+        OrderId = orderId;
+        CustomerId = customerId;
+        OrderStatus = orderStatus;
+        OrderDate = orderDate;
+        RequiredDate = requiredDate;
+        ShippedDate = shippedDate;
+        StoreId = storeId;
+        StaffId = staffId;
+        
+    }
 
-    public byte OrderStatus { get; set; }
+    public int OrderId { get; private set; }
 
-    public DateTime OrderDate { get; set; }
+    public int? CustomerId { get; private set; }
 
-    public DateTime RequiredDate { get; set; }
+    public byte OrderStatus { get; private set; }
 
-    public DateTime? ShippedDate { get; set; }
+    public DateTime OrderDate { get; private set; }
 
-    public int StoreId { get; set; }
+    public DateTime RequiredDate { get; private set; }
 
-    public int StaffId { get; set; }
+    public DateTime? ShippedDate { get; private set; }
+
+    public int StoreId { get; private set; }
+
+    public int StaffId { get; private set; }
 
     public virtual Customer? Customer { get; set; }
 

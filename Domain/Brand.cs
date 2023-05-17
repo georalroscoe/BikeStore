@@ -5,9 +5,17 @@ namespace Domain;
 
 public class Brand
 {
-    public int BrandId { get; set; }
 
-    public string BrandName { get; set; } = null!;
+    public Brand(int brandId, string brandName)
+    {
+        BrandId = brandId;
+        BrandName = brandName;
+       
+    }
+
+    public int BrandId { get; private set; }
+
+    public string BrandName { get; private set; } = null!;
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }
