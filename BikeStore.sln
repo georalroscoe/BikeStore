@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BikeStore", "BikeStore\BikeStore.csproj", "{8EEAAF3A-1990-4B8B-8F5B-E6AF1EBA1551}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{A25CCFCE-6FE1-47CE-9644-B619BEDE8660}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{8728AB58-B225-4580-A93D-E985AF996490}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8EEAAF3A-1990-4B8B-8F5B-E6AF1EBA1551}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EEAAF3A-1990-4B8B-8F5B-E6AF1EBA1551}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EEAAF3A-1990-4B8B-8F5B-E6AF1EBA1551}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EEAAF3A-1990-4B8B-8F5B-E6AF1EBA1551}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A25CCFCE-6FE1-47CE-9644-B619BEDE8660}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A25CCFCE-6FE1-47CE-9644-B619BEDE8660}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A25CCFCE-6FE1-47CE-9644-B619BEDE8660}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A25CCFCE-6FE1-47CE-9644-B619BEDE8660}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8728AB58-B225-4580-A93D-E985AF996490}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8728AB58-B225-4580-A93D-E985AF996490}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8728AB58-B225-4580-A93D-E985AF996490}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8728AB58-B225-4580-A93D-E985AF996490}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8AB9671D-E040-40F0-B98E-8C1C7D4188AD}
+	EndGlobalSection
+EndGlobal
