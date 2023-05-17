@@ -6,18 +6,22 @@ namespace Domain;
 public class Order
 {
 
-    public Order(int orderId, int? customerId, byte orderStatus, DateTime orderDate, DateTime requiredDate, DateTime? shippedDate, int storeId, int staffId)
+    private Order()
     {
-        OrderId = orderId;
-        CustomerId = customerId;
-        OrderStatus = orderStatus;
-        OrderDate = orderDate;
-        RequiredDate = requiredDate;
-        ShippedDate = shippedDate;
-        StoreId = storeId;
-        StaffId = staffId;
-        
+        OrderItems = new List<OrderItem>();
     }
+    //public Order(int orderId, int? customerId, byte orderStatus, DateTime orderDate, DateTime requiredDate, DateTime? shippedDate, int storeId, int staffId) : this()
+    //{
+    //    OrderId = orderId;
+    //    CustomerId = customerId;
+    //    OrderStatus = orderStatus;
+    //    OrderDate = orderDate;
+    //    RequiredDate = requiredDate;
+    //    ShippedDate = shippedDate;
+    //    StoreId = storeId;
+    //    StaffId = staffId;
+        
+    //}
 
     public int OrderId { get; private set; }
 
@@ -35,11 +39,11 @@ public class Order
 
     public int StaffId { get; private set; }
 
-    public virtual Customer? Customer { get; set; }
+    public virtual Customer? Customer { get; private set; }
 
-    public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public virtual ICollection<OrderItem> OrderItems { get; private set; } = new List<OrderItem>();
 
-    public virtual Staff Staff { get; set; } = null!;
+    public virtual Staff Staff { get; private set; } = null!;
 
-    public virtual Store Store { get; set; } = null!;
+    public virtual Store Store { get; private set; } = null!;
 }

@@ -5,17 +5,19 @@ namespace Domain;
 
 public class Brand
 {
-
-    public Brand(int brandId, string brandName)
-    {
-        BrandId = brandId;
-        BrandName = brandName;
-       
+    private Brand() {
+    Products = new List<Product>();
     }
+    //public Brand(int brandId, string brandName)
+    //{
+    //    BrandId = brandId;
+    //    BrandName = brandName;
+       
+    //}
 
     public int BrandId { get; private set; }
 
     public string BrandName { get; private set; } = null!;
 
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+    public virtual ICollection<Product> Products { get; private set; } = new List<Product>();
 }

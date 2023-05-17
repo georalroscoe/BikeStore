@@ -5,14 +5,14 @@ namespace Domain;
 
 public class Stock
 {
-
-    public Stock(int storeId, int productId, int? quantity)
-    { 
-        StoreId = storeId;
-        ProductId = productId;
-        Quantity = quantity;
+    private Stock() { }
+    //public Stock(int storeId, int productId, int? quantity)
+    //{ 
+    //    StoreId = storeId;
+    //    ProductId = productId;
+    //    Quantity = quantity;
       
-    }
+    //}
 
     public int StoreId { get; private set; }
 
@@ -20,7 +20,7 @@ public class Stock
 
     public int? Quantity { get; private set; }
 
-    public virtual Product Product { get; set; } = null!;
+    public virtual Product Product { get; private set; } = null!;
 
-    public virtual Store Store { get; set; } = null!;
+    public virtual Store Store { get; private set; } = null!;
 }

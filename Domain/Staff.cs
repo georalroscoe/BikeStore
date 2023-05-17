@@ -5,18 +5,22 @@ namespace Domain;
 
 public class Staff
 {
-    public Staff(int staffId, string firstName, string lastName, string email, string? phone, byte active, int storeId, int? managerId)
-    {
-        StaffId = staffId;
-        FirstName = firstName;
-        LastName = lastName;
-        Email = email;
-        Phone = phone;
-        Active = active;
-        StoreId = storeId;
-        ManagerId = managerId;
-       
+    private Staff() { 
+    Orders = new List<Order>();
+        InverseManager = new List<Staff>();
     }
+    //public Staff(int staffId, string firstName, string lastName, string email, string? phone, byte active, int storeId, int? managerId)
+    //{
+    //    StaffId = staffId;
+    //    FirstName = firstName;
+    //    LastName = lastName;
+    //    Email = email;
+    //    Phone = phone;
+    //    Active = active;
+    //    StoreId = storeId;
+    //    ManagerId = managerId;
+       
+    //}
 
     public int StaffId { get; private set; }
 
@@ -34,11 +38,11 @@ public class Staff
 
     public int? ManagerId { get; private set; }
 
-    public virtual ICollection<Staff> InverseManager { get; set; } = new List<Staff>();
+    public virtual ICollection<Staff> InverseManager { get; private set; } = new List<Staff>();
 
-    public virtual Staff? Manager { get; set; }
+    public virtual Staff? Manager { get; private set; }
 
-    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+    public virtual ICollection<Order> Orders { get; private set; } = new List<Order>();
 
-    public virtual Store Store { get; set; } = null!;
+    public virtual Store Store { get; private set; } = null!;
 }
