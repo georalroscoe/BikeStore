@@ -9,13 +9,13 @@ using Domain;
 
 namespace DataAccess;
 
-public partial class GrDatabaseContext : DbContext
+public partial class BikeStoreContext : DbContext
 {
-    public GrDatabaseContext()
+    public BikeStoreContext()
     {
     }
 
-    public GrDatabaseContext(DbContextOptions<GrDatabaseContext> options)
+    public BikeStoreContext(DbContextOptions<BikeStoreContext> options)
         : base(options)
     {
     }
@@ -42,13 +42,14 @@ public partial class GrDatabaseContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new BrandMap());
-        modelBuilder.ApplyConfiguration(new LocationMap());
-        modelBuilder.ApplyConfiguration(new WarehouseBatchMap());
-        modelBuilder.ApplyConfiguration(new WarehouseBatchContentMap());
+        modelBuilder.ApplyConfiguration(new CategoryMap());
+        modelBuilder.ApplyConfiguration(new CustomerMap());
+        modelBuilder.ApplyConfiguration(new OrderItemMap());
+        modelBuilder.ApplyConfiguration(new OrderMap());
         modelBuilder.ApplyConfiguration(new ProductMap());
-        modelBuilder.ApplyConfiguration(new ManufactoringLotMap());
-        modelBuilder.ApplyConfiguration(new CustomerOrderMap());
-        modelBuilder.ApplyConfiguration(new OrderProductMap());
+        modelBuilder.ApplyConfiguration(new StaffMap());
+        modelBuilder.ApplyConfiguration(new StockMap());
+        modelBuilder.ApplyConfiguration(new StoreMap());
 
 
     }
