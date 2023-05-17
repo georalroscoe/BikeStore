@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{F4A381C7-D632-4934-9FC8-4F793B54F42A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PrivateWebApi", "PrivateWebApi", "{38919ECC-A3C5-4156-BF1B-13E9744E79DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dtos", "Dtos\Dtos.csproj", "{0B7CA8B9-3B97-4F06-8233-FFE55D8A1C19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +37,17 @@ Global
 		{F4A381C7-D632-4934-9FC8-4F793B54F42A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4A381C7-D632-4934-9FC8-4F793B54F42A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4A381C7-D632-4934-9FC8-4F793B54F42A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B7CA8B9-3B97-4F06-8233-FFE55D8A1C19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B7CA8B9-3B97-4F06-8233-FFE55D8A1C19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B7CA8B9-3B97-4F06-8233-FFE55D8A1C19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B7CA8B9-3B97-4F06-8233-FFE55D8A1C19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{73A13B05-2195-4D87-BBF3-A23B620509F2} = {38919ECC-A3C5-4156-BF1B-13E9744E79DC}
+		{0B7CA8B9-3B97-4F06-8233-FFE55D8A1C19} = {38919ECC-A3C5-4156-BF1B-13E9744E79DC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8AB9671D-E040-40F0-B98E-8C1C7D4188AD}
