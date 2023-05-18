@@ -9,16 +9,16 @@ public class Product
     OrderItems = new List<OrderItem>();
     Stocks = new List<Stock>();
     }
-    //public Product(int productId, string productName, int brandId, int categoryId, short modelYear, decimal listPrice)
-    //{
-    //    ProductId = productId;
-    //    ProductName = productName;
-    //    BrandId = brandId;
-    //    CategoryId = categoryId;
-    //    ModelYear = modelYear;
-    //    ListPrice = listPrice;
-       
-    //}
+    public Product(string productName, int categoryId, short modelYear, decimal listPrice) : this()
+    {
+        
+        ProductName = productName;
+        
+        CategoryId = categoryId;
+        ModelYear = modelYear;
+        ListPrice = listPrice;
+
+    }
 
     public int ProductId { get; private set; }
 

@@ -23,4 +23,17 @@ public class Stock
     public virtual Product Product { get; private set; } = null!;
 
     public virtual Store Store { get; private set; } = null!;
+
+    public bool TakeOrderProducts(int quantity)
+    {
+        if (quantity >= Quantity)
+        {
+            Quantity -= quantity;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

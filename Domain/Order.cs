@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Diagnostics;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Domain;
@@ -10,18 +12,32 @@ public class Order
     {
         OrderItems = new List<OrderItem>();
     }
-    //public Order(int orderId, int? customerId, byte orderStatus, DateTime orderDate, DateTime requiredDate, DateTime? shippedDate, int storeId, int staffId) : this()
-    //{
-    //    OrderId = orderId;
-    //    CustomerId = customerId;
-    //    OrderStatus = orderStatus;
-    //    OrderDate = orderDate;
-    //    RequiredDate = requiredDate;
-    //    ShippedDate = shippedDate;
-    //    StoreId = storeId;
-    //    StaffId = staffId;
-        
-    //}
+
+
+    public Order( byte orderStatus, int storeId, int staffId) : this()
+    {
+        OrderDate = DateTime.Now;
+        RequiredDate = OrderDate.AddDays(5);
+        OrderStatus = orderStatus;
+        StoreId = storeId;
+        StaffId = staffId;
+
+
+    }
+
+    public void FillOrder(Stock stock, int itemId, int productId, decimal listPrice, int quantity, decimal discount)
+    {
+        bool hadQuantity = stock.TakeOrderProducts(quantity);
+        if (!hadQuantity)
+        {
+            return;
+        }
+        OrderItem orderItem = new OrderItem(itemId, productId, quantity, listPrice, discount);
+        OrderItems.Add(orderItem);
+        return;
+    }
+
+    
 
     public int OrderId { get; private set; }
 

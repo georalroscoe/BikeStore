@@ -7,16 +7,16 @@ public partial class OrderItem
 {
 
     private OrderItem() { }
-    //public OrderItem(int orderId, int itemId, int productId, int quantity, decimal listPrice, decimal discount)
-    //{
-    //    OrderId = orderId;
-    //    ItemId = itemId;
-    //    ProductId = productId;
-    //    Quantity = quantity;
-    //    ListPrice = listPrice;
-    //    Discount = discount;
-        
-    //}
+    public OrderItem(int itemId, int productId, int quantity, decimal listPrice, decimal discount) : this()
+    {
+       
+        ItemId = itemId;
+        ProductId = productId;
+        Quantity = quantity;
+        ListPrice = listPrice;
+        Discount = discount;
+
+    }
 
     public int OrderId { get; private set; }
 

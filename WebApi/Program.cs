@@ -14,8 +14,14 @@ var connstr = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddMvc().AddControllersAsServices();
 builder.Services.AddDbContext<BikeStoreContext>(options => options.UseSqlServer(connstr));
 builder.Services.AddScoped<DbContext, BikeStoreContext>()
-    .AddScoped<IUnitOfWork, UnitOfWork>();
-    
+    .AddScoped<IUnitOfWork, UnitOfWork>()
+    .AddTransient<IGenericRepository<Customer>, GenericRepository<Customer>>()
+    .AddTransient<IGenericRepository<Staff>, GenericRepository<Staff>>()
+    .AddTransient<IGenericRepository<Stock>, GenericRepository<Stock>>()
+    .AddTransient<IGenericRepository<Brand>, GenericRepository<Brand>>();
+
+
+
 
 
 

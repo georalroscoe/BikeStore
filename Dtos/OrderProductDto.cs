@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Dtos
 {
-    internal class OrderProductDto
+    public class OrderProductDto
     {
+        public int ItemId { get; set; }
+        public int ProductId { get; set; }
+        public decimal Discount { get; set; }
+        public int Quantity { get; set; }
     }
 }

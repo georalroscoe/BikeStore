@@ -23,6 +23,15 @@ public class Customer
        
     //}
 
+    public Order CreateOrder(int staffId, int storeId)
+    {
+
+        var order = new Order(0, staffId, storeId);
+        Orders.Add(order);
+        return order;
+    }
+
+
     public int CustomerId { get; private set; }
 
     public string FirstName { get; private set; } = null!;

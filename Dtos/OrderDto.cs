@@ -1,7 +1,11 @@
 ﻿namespace Dtos
 {
-    public class Class1
+    public class OrderDto
     {
+        public int StaffId { get; set; }
+        
+        public int CustomerId { get; set; }
 
+        public List<OrderProductDto> Products { get; set; } = new List<OrderProductDto>();
     }
 }
