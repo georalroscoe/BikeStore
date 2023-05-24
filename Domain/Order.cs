@@ -25,9 +25,9 @@ public class Order
 
     }
 
-    public void FillOrder(Stock stock, int itemId, int productId,  int quantity, decimal discount)
+    public void FillOrder(byte[] currentTimeStamp, Stock stock, int itemId, int productId,  int quantity, decimal discount)
     {
-       stock.TakeProduct(quantity);
+       stock.TakeProduct(currentTimeStamp, quantity);
       
         OrderItem orderItem = new OrderItem(itemId, productId, quantity,  discount);
         OrderItems.Add(orderItem);

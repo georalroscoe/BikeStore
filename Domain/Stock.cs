@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Domain;
@@ -26,8 +27,13 @@ public class Stock
 
     public virtual Store Store { get; private set; } = null!;
 
-    public bool TakeProduct(int quantity)
+    public bool TakeProduct(byte[] currentTimeStamp, int quantity)
     {
+        if (!IsTimestampValid(currentTimeStamp))
+        {
+            
+            throw new Exception("Concurrency conflict occurred. Stock has been modified by another transaction.");
+        }
         if (quantity >= Quantity)
         {
             Quantity -= quantity;
@@ -37,5 +43,10 @@ public class Stock
         {
             return false;
         }
+    }
+
+    private bool IsTimestampValid(byte[] currentTimestamp)
+    {
+        return StructuralComparisons.StructuralEqualityComparer.Equals(currentTimestamp, TimeStamp);
     }
 }

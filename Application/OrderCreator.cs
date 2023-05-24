@@ -81,8 +81,9 @@ namespace Application
                 {
                     throw new Exception("Product does not exist in stock list");
                 }
-                
-                newOrder.FillOrder(stock, orderProductDto.ItemId, orderProductDto.ProductId, orderProductDto.Quantity, orderProductDto.Discount);
+                var currentTimeStamp = stock.TimeStamp;
+
+                newOrder.FillOrder(currentTimeStamp, stock, orderProductDto.ItemId, orderProductDto.ProductId, orderProductDto.Quantity, orderProductDto.Discount);
 
 
             }
