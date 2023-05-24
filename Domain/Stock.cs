@@ -6,25 +6,27 @@ namespace Domain;
 public class Stock
 {
     private Stock() { }
-    //public Stock(int storeId, int productId, int? quantity)
-    //{ 
-    //    StoreId = storeId;
-    //    ProductId = productId;
-    //    Quantity = quantity;
-      
-    //}
+    public Stock(int productId, int quantity) : this()
+    {
+       
+        ProductId = productId;
+        Quantity = quantity;
+
+    }
 
     public int StoreId { get; private set; }
 
     public int ProductId { get; private set; }
 
-    public int? Quantity { get; private set; }
+    public int Quantity { get; private set; }
+    
+    public byte[] TimeStamp { get; private set; }
 
     public virtual Product Product { get; private set; } = null!;
 
     public virtual Store Store { get; private set; } = null!;
 
-    public bool TakeOrderProducts(int quantity)
+    public bool TakeProduct(int quantity)
     {
         if (quantity >= Quantity)
         {

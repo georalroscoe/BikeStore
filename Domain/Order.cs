@@ -25,21 +25,33 @@ public class Order
 
     }
 
-    public void FillOrder(Stock stock, int itemId, int productId, decimal listPrice, int quantity, decimal discount)
+    public void FillOrder(Stock stock, int itemId, int productId,  int quantity, decimal discount)
     {
-        bool hadQuantity = stock.TakeOrderProducts(quantity);
-        if (!hadQuantity)
-        {
-            return;
-        }
-        OrderItem orderItem = new OrderItem(itemId, productId, quantity, listPrice, discount);
+       stock.TakeProduct(quantity);
+      
+        OrderItem orderItem = new OrderItem(itemId, productId, quantity,  discount);
         OrderItems.Add(orderItem);
+        
         return;
     }
 
-    
+
+    //restful APIs, naming conventions, object names use nouns, controllers called orders, controller says order
+
+    //    in application layer class called - do it the other way round 
+    //look up and read about concurrency in databases 
+    //optimistic and pessimistic concurrency - genreally go with optimistic. 
+    //when fetching info from a store
+    //    method in linq called contains (CallConvThiscall is AlterSequenceOperation a problem). 
+    //look up hashing
+
+    //create a domain in the validation domain object and put the logic for tha tvalidation in the domain objec , stock levels for all
+    //the diff products in the domain object, you want the store, all of your orders, create all orders and put them in validaiton object,
+    //check if its valid , have isvalid property on there which will return true if the list of problems is empty 
 
     public int OrderId { get; private set; }
+    //on the applciaiton side check if its valid and if it isnt reutnr all the lsit of problems in the dto 
+    //could do all the validaiton in the application 
 
     public int? CustomerId { get; private set; }
 
@@ -62,4 +74,6 @@ public class Order
     public virtual Staff Staff { get; private set; } = null!;
 
     public virtual Store Store { get; private set; } = null!;
+
+    
 }

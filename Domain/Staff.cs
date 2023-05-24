@@ -9,18 +9,18 @@ public class Staff
     Orders = new List<Order>();
         InverseManager = new List<Staff>();
     }
-    //public Staff(int staffId, string firstName, string lastName, string email, string? phone, byte active, int storeId, int? managerId)
-    //{
-    //    StaffId = staffId;
-    //    FirstName = firstName;
-    //    LastName = lastName;
-    //    Email = email;
-    //    Phone = phone;
-    //    Active = active;
-    //    StoreId = storeId;
-    //    ManagerId = managerId;
-       
-    //}
+    public Staff(string firstName, string lastName, string email, string? phone, byte active, int storeId, int? managerId) : this()
+    {
+        
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        Phone = phone;
+        Active = active;
+        StoreId = storeId;
+        ManagerId = managerId;
+
+    }
 
     public int StaffId { get; private set; }
 

@@ -6,7 +6,8 @@ using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using WebApi;
-
+using Application.Interfaces;
+using Application;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -18,7 +19,10 @@ builder.Services.AddScoped<DbContext, BikeStoreContext>()
     .AddTransient<IGenericRepository<Customer>, GenericRepository<Customer>>()
     .AddTransient<IGenericRepository<Staff>, GenericRepository<Staff>>()
     .AddTransient<IGenericRepository<Stock>, GenericRepository<Stock>>()
-    .AddTransient<IGenericRepository<Brand>, GenericRepository<Brand>>();
+    .AddTransient<IGenericRepository<Brand>, GenericRepository<Brand>>()
+    .AddTransient<ICreateProducts, ProductCreator>()
+    .AddTransient<ICreateOrders, OrderCreator>();
+
 
 
 

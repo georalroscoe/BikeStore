@@ -16,25 +16,25 @@ using Dtos;
 using System.Xml;
 
 
-namespace Application { 
-    public class CreateOrder : ICreateOrders
+namespace Application
+{ 
+    public class OrderCreator : ICreateOrders
     {
 
         private readonly IUnitOfWork _uow;
         private readonly IGenericRepository<Customer> _customerRepo;
         private readonly IGenericRepository<Staff> _staffRepo;
-        private readonly IGenericRepository<Product> _productRepo;
         private readonly IGenericRepository<Stock> _stockRepo;
+      
 
-        public CreateOrder (IUnitOfWork uow, IGenericRepository<Customer> customer, IGenericRepository<Staff> staff, IGenericRepository<Product> product, IGenericRepository<Stock> stock) { 
+        public OrderCreator (IUnitOfWork uow, IGenericRepository<Customer> customer, IGenericRepository<Staff> staff, IGenericRepository<Stock> stock) { 
             _uow = uow; 
             _customerRepo = customer;
             _staffRepo = staff;
-            _productRepo = product;
-            _stockRepo = stock;
+            
         }
 
-        public void OrderCreator(OrderDto orderDto)
+        public void Add(OrderDto orderDto)
         {
             var staff = _staffRepo.GetById(orderDto.StaffId);
             var customer = _customerRepo.GetById(orderDto.CustomerId);
@@ -45,20 +45,51 @@ namespace Application {
                 //create a new customer, would need to go back to api and request more info from user
             }
 
-            Order newOrder = customer.CreateOrder(staff.StaffId, staff.StoreId);
+            Validation validation = new Validation(staff.StoreId);
+            Order newOrder = customer.AddOrder(staff.StaffId, staff.StoreId);
+
+
             foreach (OrderProductDto orderProductDto in orderDto.Products.ToList())
             {
                 Stock? stock = _stockRepo.Get(x => x.StoreId == staff.StoreId && x.ProductId == orderProductDto.ProductId).FirstOrDefault();
-                if (stock == null )
+                if (stock == null)
+                {
+                    throw new Exception("Product does not exist in stock list");
+                }
+                validation.AddOrderItem(stock, orderProductDto.ItemId, orderProductDto.ProductId, orderProductDto.Quantity, orderProductDto.Discount);
+               
+
+
+            }
+
+
+
+            validation.isValid();
+
+            if (!validation.IsValid)
+            {
+                throw new Exception("return the error list in the vailidation domain");
+            }
+
+
+
+
+            foreach (OrderProductDto orderProductDto in orderDto.Products.ToList())
+            {
+                Stock? stock = _stockRepo.Get(x => x.StoreId == staff.StoreId && x.ProductId == orderProductDto.ProductId).FirstOrDefault();
+                if (stock == null)
                 {
                     throw new Exception("Product does not exist in stock list");
                 }
                 
-                decimal listPrice = stock.Product.ListPrice;
-                newOrder.FillOrder(stock, orderProductDto.ItemId, orderProductDto.ProductId, listPrice, orderProductDto.Quantity, orderProductDto.Discount);
+                newOrder.FillOrder(stock, orderProductDto.ItemId, orderProductDto.ProductId, orderProductDto.Quantity, orderProductDto.Discount);
 
-                
+
             }
+
+
+
+
             _uow.Save();
            
             //productid, quantity, discount, itemid passed to a list on a dto with staff and customerid
@@ -68,6 +99,8 @@ namespace Application {
             //check stock at that store,
             //take away quantity from stock
             //check if there is a customer, if not make one
+
+            
 
             //
         }

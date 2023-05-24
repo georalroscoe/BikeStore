@@ -8,12 +8,12 @@ public class Category
     private Category() {
     Products = new List<Product>();
     }
-    //public Category(int categoryId, string categoryName)
-    //{
-    //    CategoryId = categoryId;
-    //    CategoryName = categoryName;
+    public Category(string categoryName) : this()
+    {
         
-    //}
+        CategoryName = categoryName;
+
+    }
 
     public int CategoryId { get; private set; }
 

@@ -7,13 +7,13 @@ public partial class OrderItem
 {
 
     private OrderItem() { }
-    public OrderItem(int itemId, int productId, int quantity, decimal listPrice, decimal discount) : this()
+    public OrderItem(int itemId, int productId, int quantity,  decimal discount) : this()
     {
        
         ItemId = itemId;
         ProductId = productId;
         Quantity = quantity;
-        ListPrice = listPrice;
+       
         Discount = discount;
 
     }

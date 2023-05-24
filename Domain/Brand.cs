@@ -8,12 +8,12 @@ public class Brand
     private Brand() {
     Products = new List<Product>();
     }
-    //public Brand(int brandId, string brandName)
-    //{
-    //    BrandId = brandId;
-    //    BrandName = brandName;
-       
-    //}
+    public Brand(string brandName) : this()
+    {
+        
+        BrandName = brandName;
+
+    }
 
     public int BrandId { get; private set; }
 
@@ -21,7 +21,7 @@ public class Brand
 
     public virtual ICollection<Product> Products { get; private set; } = new List<Product>();
 
-    public void CreateNewProduct(string productName, int categoryId, short modelYear, decimal listPrice)
+    public void AddProduct(string productName, int categoryId, short modelYear, decimal listPrice)
     {
         Product product = new Product(productName, categoryId, modelYear, listPrice);
         Products.Add(product);

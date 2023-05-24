@@ -10,18 +10,18 @@ public class Store
     Staff = new List<Staff>();
     Stocks = new List<Stock>();
     }
-    //public Store(int storeId, string storeName, string? phone, string? email, string? street, string? city, string? state, string? zipCode)
-    //{
-    //    StoreId = storeId;
-    //    StoreName = storeName;
-    //    Phone = phone;
-    //    Email = email;
-    //    Street = street;
-    //    City = city;
-    //    State = state;
-    //    ZipCode = zipCode;
+    public Store(string storeName, string? phone, string? email, string? street, string? city, string? state, string? zipCode) : this ()
+    {
+       
+        StoreName = storeName;
+        Phone = phone;
+        Email = email;
+        Street = street;
+        City = city;
+        State = state;
+        ZipCode = zipCode;
 
-    //}
+    }
 
     public int StoreId { get; private set; }
 

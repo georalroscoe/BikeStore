@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dtos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace Application.Interfaces
 {
     public interface ICreateProducts
     {
-        
+        void Add(ProductDto productDto);
+
+
     }
 }

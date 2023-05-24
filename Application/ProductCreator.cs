@@ -18,20 +18,20 @@ using System.Xml;
 
 namespace Application
 {
-    public class CreateProduct : ICreateProducts
+    public class ProductCreator : ICreateProducts
     {
 
         private readonly IUnitOfWork _uow;
         private readonly IGenericRepository<Brand> _brandRepo;
         
 
-        public CreateProduct(IUnitOfWork uow, IGenericRepository<Brand> brandRepo)
+        public ProductCreator(IUnitOfWork uow, IGenericRepository<Brand> brandRepo)
         {
             _uow = uow;
             _brandRepo = brandRepo;
         }
 
-        public void ProductCreator(ProductDto productDto)
+        public void Add(ProductDto productDto)
         {
             Brand brand = _brandRepo.GetById(productDto.BrandId);
             if (brand == null)
@@ -39,7 +39,7 @@ namespace Application
                 throw new Exception("Brand is null");
             }
 
-            brand.CreateNewProduct(productDto.ProductName, productDto.CategoryId, productDto.ModelYear, productDto.ListPrice);
+            brand.AddProduct(productDto.ProductName, productDto.CategoryId, productDto.ModelYear, productDto.ListPrice);
 
             _uow.Save();
             //dto with brand id, catergory id, productName, model year, list price,

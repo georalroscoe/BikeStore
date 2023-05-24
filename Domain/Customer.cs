@@ -9,21 +9,21 @@ public class Customer
     Orders = new List<Order>();
             
       }
-    //public Customer(int customerId, string firstName, string lastName, string? phone, string email, string? street, string? city, string? state, string? zipCode)
-    //{
-    //    CustomerId = customerId;
-    //    FirstName = firstName;
-    //    LastName = lastName;
-    //    Phone = phone;
-    //    Email = email;
-    //    Street = street;
-    //    City = city;
-    //    State = state;
-    //    ZipCode = zipCode;
+    public Customer( string firstName, string lastName, string? phone, string email, string? street, string? city, string? state, string? zipCode) : this()
+    {
        
-    //}
+        FirstName = firstName;
+        LastName = lastName;
+        Phone = phone;
+        Email = email;
+        Street = street;
+        City = city;
+        State = state;
+        ZipCode = zipCode;
 
-    public Order CreateOrder(int staffId, int storeId)
+    }
+
+    public Order AddOrder(int staffId, int storeId)
     {
 
         var order = new Order(0, staffId, storeId);
