@@ -7,9 +7,9 @@ namespace Domain;
 public class Stock
 {
     private Stock() { }
-    public Stock(int productId, int quantity) : this()
+    public Stock(int storeId, int productId, int quantity) : this()
     {
-       
+        StoreId = storeId;
         ProductId = productId;
         Quantity = quantity;
 

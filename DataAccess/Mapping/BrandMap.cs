@@ -21,7 +21,7 @@ namespace DataAccess.Mapping
 
                 builder.ToTable("brands", "production");
 
-                builder.Property(e => e.BrandId).HasColumnName("brand_id");
+                builder.Property(e => e.BrandId).HasColumnName("brand_id").ValueGeneratedOnAdd(); 
                 builder.Property(e => e.BrandName)
                     .HasMaxLength(255)
                     .IsUnicode(false)

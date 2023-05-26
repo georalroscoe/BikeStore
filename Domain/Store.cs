@@ -10,9 +10,9 @@ public class Store
     Staff = new List<Staff>();
     Stocks = new List<Stock>();
     }
-    public Store(string storeName, string? phone, string? email, string? street, string? city, string? state, string? zipCode) : this ()
+    public Store(int storeId, string storeName, string? phone, string? email, string? street, string? city, string? state, string? zipCode) : this ()
     {
-       
+        StoreId = storeId;
         StoreName = storeName;
         Phone = phone;
         Email = email;
@@ -44,4 +44,10 @@ public class Store
     public virtual ICollection<Staff> Staff { get; private set; } = new List<Staff>();
 
     public virtual ICollection<Stock> Stocks { get; private set; } = new List<Stock>();
+
+    public void AddStock(int productId, int quantity)
+    {
+        Stock stock = new Stock(StoreId, productId, quantity);
+        Stocks.Add(stock);
+    }
 }

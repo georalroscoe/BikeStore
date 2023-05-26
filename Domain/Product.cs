@@ -9,9 +9,10 @@ public class Product
     OrderItems = new List<OrderItem>();
     Stocks = new List<Stock>();
     }
-    public Product(string productName, int categoryId, short modelYear, decimal listPrice) : this()
+    public Product(int productId, int brandId, string productName, int categoryId, short modelYear, decimal listPrice) : this()
     {
-        
+        ProductId = productId;
+        BrandId = brandId;
         ProductName = productName;
         
         CategoryId = categoryId;

@@ -9,9 +9,9 @@ public class Staff
     Orders = new List<Order>();
         InverseManager = new List<Staff>();
     }
-    public Staff(string firstName, string lastName, string email, string? phone, byte active, int storeId, int? managerId) : this()
+    public Staff(int staffId, string firstName, string lastName, string email, string? phone, byte active, int storeId, int? managerId) : this()
     {
-        
+        StaffId = staffId;
         FirstName = firstName;
         LastName = lastName;
         Email = email;

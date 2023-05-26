@@ -8,10 +8,11 @@ public class Category
     private Category() {
     Products = new List<Product>();
     }
-    public Category(string categoryName) : this()
+    public Category(int categoryId, string categoryName) : this()
     {
-        
+        CategoryId = categoryId;
         CategoryName = categoryName;
+
 
     }
 
