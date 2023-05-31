@@ -20,7 +20,7 @@ namespace DataAccess.Mapping
 
             builder.ToTable("products", "production");
 
-            builder.Property(e => e.ProductId).HasColumnName("product_id");
+            builder.Property(e => e.ProductId).HasColumnName("product_id").ValueGeneratedOnAdd();
             builder.Property(e => e.BrandId).HasColumnName("brand_id");
             builder.Property(e => e.CategoryId).HasColumnName("category_id");
             builder.Property(e => e.ListPrice)

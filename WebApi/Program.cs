@@ -21,7 +21,8 @@ builder.Services.AddScoped<DbContext, BikeStoreContext>()
     .AddTransient<IGenericRepository<Stock>, GenericRepository<Stock>>()
     .AddTransient<IGenericRepository<Brand>, GenericRepository<Brand>>()
     .AddTransient<ICreateProducts, ProductCreator>()
-    .AddTransient<ICreateOrders, OrderCreator>();
+    .AddTransient<ICreateOrders, OrderCreator>()
+    .AddTransient<ISeedBrands, BrandSeeder>();
 
 
 
