@@ -9,8 +9,9 @@ using Microsoft.Identity.Client;
 using Dtos;
 using DataAccess.Repositories;
 using DataAccess;
-;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.EntityFrameworkCore;
+
+
 
 namespace UnitTest
 
@@ -21,19 +22,56 @@ namespace UnitTest
         [TestMethod]
         public void FillDatabase()
         {
+            var dbContextOptions = new DbContextOptionsBuilder<BikeStoreContext>()
+    .UseInMemoryDatabase(databaseName: "TestDatabase")
+    .Options;
 
-            // Create an in-memory implementation of the IUnitOfWork interface
-            var unitOfWork = new InMemoryUnitOfWork();
+            using (var dbContext = new BikeStoreContext(dbContextOptions))
+            {
+                // Create an instance of the real UnitOfWork, passing the DbContext
+                var unitOfWork = new UnitOfWork(dbContext);
 
-            // Create an instance of the BrandSeeder class, passing the in-memory IUnitOfWork
-            var brandSeeder = new BrandSeeder(unitOfWork);
+                // Create an instance of your BrandSeeder class, passing the UnitOfWork and the real repository
+                var brandSeeder = new BrandSeeder(unitOfWork, new GenericRepository<Brand>(dbContext));
 
-            // Invoke the SeedBrands method with a value of 5
-            brandSeeder.SeedBrands(5);
+                // Define the number of brands you want to seed
+                int numberOfBrands = 5;
 
-            // Assert that the expected changes have been saved
-            // Example: Assert that the Count of a repository has increased by 5
-            Assert.Equal(5, unitOfWork.GetRepository<Brand>().Count());
+                // Call the SeedBrands method
+                brandSeeder.SeedBrands(numberOfBrands);
+
+                // Retrieve the brands added to the DbContext
+                var addedBrands = dbContext.Brands.ToList();
+
+                // Assert that the count of added brands is equal to the expected number
+                Assert.AreEqual(numberOfBrands, addedBrands.Count);
+
+                var categorySeeder = new CategorySeeder(unitOfWork, new GenericRepository<Category>(dbContext));
+
+                int numberOfCategories = 5;
+
+                categorySeeder.SeedCategories(numberOfCategories);
+
+                var addedCategories = dbContext.Categories.ToList();
+
+                Assert.AreEqual (numberOfCategories, addedCategories.Count);
+
+
+                var productSeeder = new ProductSeeder(unitOfWork, new GenericRepository<Brand>(dbContext), new GenericRepository<Category>(dbContext), new GenericRepository<Product>(dbContext));
+
+                int numberOfProducts = 5;
+
+                productSeeder.SeedProducts(numberOfProducts);
+
+                Assert.AreEqual(numberOfProducts, 5);
+                
+
+            }
+
+
+
+
+
             //        Random random = new Random();
             //        List<Brand> brandList = new List<Brand>();
             //        Brand cannondale = new Brand(random.Next(100_000_000, 1_000_000_000), "Cannondale");
@@ -224,6 +262,6 @@ namespace UnitTest
 
 
         }
-        
+
     }
 }

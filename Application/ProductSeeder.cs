@@ -18,24 +18,64 @@ using System.Xml;
 
 namespace Application
 {
-    public class ProductSeeder
+    public class ProductSeeder 
     {
 
         private readonly IUnitOfWork _uow;
         private readonly IGenericRepository<Brand> _brandRepo;
+        private readonly IGenericRepository<Category> _categoryRepo;
+        private readonly IGenericRepository<Product> _productRepo;
 
 
-        public ProductSeeder(IUnitOfWork uow, IGenericRepository<Brand> brandRepo)
+        public ProductSeeder(IUnitOfWork uow, IGenericRepository<Brand> brandRepo, IGenericRepository<Category> categoryRepo, IGenericRepository<Product> productRepo)
         {
             _uow = uow;
             _brandRepo = brandRepo;
+            _categoryRepo = categoryRepo;
+            _productRepo = productRepo;
         }
 
-        public Brand SeedProducts(int numberOfProducts)
+        public void SeedProducts(int numberOfProducts)
         {
             List<Brand> brands = new List<Brand>();
             brands = _brandRepo.Get().ToList();
-            return brands.FirstOrDefault();
+            Random random = new Random();
+
+            int numberOfCategories = _categoryRepo.Get().Count();
+
+
+
+            foreach (var brand in brands)
+            {
+
+
+                for (int j = 0; j < numberOfProducts; j++)
+                {
+                    string modelName = GenerateRandomString();
+                    int categoryNumber = random.Next(0, numberOfCategories + 1);
+                    short year = (short)random.Next(2018, 2024);
+                    decimal price = (decimal)random.Next(700, 5001) / 100;
+                    _productRepo.Insert(brand.AddProduct(modelName, categoryNumber, year, price));
+
+                }
+
+            }
+
+            string GenerateRandomString()
+            {
+                string[] wordList = {
+                "Topstone", "Superfly", "Strive", "Ripmo", "Rascal",
+                "Jekyll", "Stache", "Levo", "Fuse", "Ripley",
+                "Epic", "Enduro", "Spectral", "Trance", "Domane",
+                "Marlin", "Slash", "Remedy", "Fuel", "Hardrock",
+                "Blur", "Stumpjumper", "Talon", "X-Caliber", "Giant",
+                "Rockhopper", "Anthem", "Roscoe", "Status", "Norco",
+                "Process", "Fathom", "Pitch", "Yukon", "Pivot",
+                "Tern", "Turbo", "Salsa", "Chameleon", "Warden"
+            };
+                Random random = new Random();
+                return wordList[random.Next(wordList.Length)];
+            }
 
             //for (int i = 0; i < numberOfCategories; i++)
             //{

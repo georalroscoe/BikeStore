@@ -9,10 +9,9 @@ public class Product
     OrderItems = new List<OrderItem>();
     Stocks = new List<Stock>();
     }
-    public Product(int productId, int brandId, string productName, int categoryId, short modelYear, decimal listPrice) : this()
+    public Product(int brandId, string productName, int categoryId, short modelYear, decimal listPrice) : this()
     {
-        ProductId = productId;
-        BrandId = brandId;
+       BrandId = brandId;
         ProductName = productName;
         
         CategoryId = categoryId;
@@ -33,9 +32,9 @@ public class Product
 
     public decimal ListPrice { get; private set; }
 
-    public virtual Brand Brand { get; private set; } = null!;
+    public virtual Brand Brand { get; private set; }
 
-    public virtual Category Category { get; private set; } = null!;
+    public virtual Category Category { get; private set; }
 
     public virtual ICollection<OrderItem> OrderItems { get; private set; } = new List<OrderItem>();
 

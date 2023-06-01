@@ -39,7 +39,7 @@ namespace Application
                 throw new Exception("Brand is null");
             }
 
-            brand.AddProduct(productDto.ProductName, productDto.CategoryId, productDto.ModelYear, productDto.ListPrice);
+            //brand.AddProduct(productDto.ProductName, productDto.CategoryId, productDto.ModelYear, productDto.ListPrice);
 
             _uow.Save();
             //dto with brand id, catergory id, productName, model year, list price,
