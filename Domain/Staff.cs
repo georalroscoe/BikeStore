@@ -9,16 +9,15 @@ public class Staff
     Orders = new List<Order>();
         InverseManager = new List<Staff>();
     }
-    public Staff(int staffId, string firstName, string lastName, string email, string? phone, byte active, int storeId, int? managerId) : this()
+    public Staff(string firstName, string lastName, string email, string? phone, byte active, int storeId) : this()
     {
-        StaffId = staffId;
         FirstName = firstName;
         LastName = lastName;
         Email = email;
         Phone = phone;
         Active = active;
         StoreId = storeId;
-        ManagerId = managerId;
+        
 
     }
 

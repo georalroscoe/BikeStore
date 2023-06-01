@@ -31,6 +31,7 @@ namespace Application
             _uow = uow; 
             _customerRepo = customer;
             _staffRepo = staff;
+            _stockRepo = stock;
             
         }
 
@@ -38,6 +39,8 @@ namespace Application
         {
             var staff = _staffRepo.GetById(orderDto.StaffId);
             var customer = _customerRepo.GetById(orderDto.CustomerId);
+
+            var stocks = _stockRepo.Get().ToList();
             
             if (customer == null)
             {

@@ -12,6 +12,7 @@ public class Stock
         StoreId = storeId;
         ProductId = productId;
         Quantity = quantity;
+        TimeStamp = GenerateTimeStamp();
 
     }
 
@@ -48,5 +49,10 @@ public class Stock
     private bool IsTimestampValid(byte[] currentTimestamp)
     {
         return StructuralComparisons.StructuralEqualityComparer.Equals(currentTimestamp, TimeStamp);
+    }
+
+    private byte[] GenerateTimeStamp()
+    {
+        return BitConverter.GetBytes(DateTime.UtcNow.Ticks);
     }
 }

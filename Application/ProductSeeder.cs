@@ -18,7 +18,7 @@ using System.Xml;
 
 namespace Application
 {
-    public class ProductSeeder 
+    public class ProductSeeder : ISeedProducts
     {
 
         private readonly IUnitOfWork _uow;
@@ -77,6 +77,8 @@ namespace Application
                 return wordList[random.Next(wordList.Length)];
             }
 
+            _uow.Save();
+
             //for (int i = 0; i < numberOfCategories; i++)
             //{
             //    int categoryId = i + 1;
@@ -87,6 +89,7 @@ namespace Application
             //    Console.WriteLine($"Created category: Category ID - {category.CategoryId}, Category Name - {category.CategoryName}");
             //}
             //_uow.Save();
+
 
         }
 

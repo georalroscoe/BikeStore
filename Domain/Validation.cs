@@ -48,7 +48,7 @@ namespace Domain
                     Errors.Add($"The asking quantity for {item.ProductId} is 0 or negative ");
                 }
                 int? stockQuantity = Stocks.FirstOrDefault(x => x.ProductId == item.ProductId).Quantity;
-                if (stockQuantity != null)
+                if (stockQuantity == null)
                 {
                     Errors.Add($"No matching product in the stock list for {item.ProductId}");
                 }
@@ -56,13 +56,13 @@ namespace Domain
                 {
                     Errors.Add($"Quantity in the stock is too low for {item.ProductId}");
                 }
-                if (item.Product == null)
-                {
-                    Errors.Add($"There is no {item.ProductId} product");
-                }
+                //if (item.Product == null)
+                //{
+                //    Errors.Add($"There is no {item.ProductId} product");
+                //}
 
             }
-            if (Errors.Count == 0)
+            if (Errors == null)
             {
                 IsValid = true;
             }

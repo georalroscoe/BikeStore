@@ -10,9 +10,9 @@ public class Store
     Staff = new List<Staff>();
     Stocks = new List<Stock>();
     }
-    public Store(int storeId, string storeName, string? phone, string? email, string? street, string? city, string? state, string? zipCode) : this ()
+    public Store(string storeName, string? phone, string? email, string? street, string? city, string? state, string? zipCode) : this ()
     {
-        StoreId = storeId;
+       
         StoreName = storeName;
         Phone = phone;
         Email = email;
@@ -45,9 +45,27 @@ public class Store
 
     public virtual ICollection<Stock> Stocks { get; private set; } = new List<Stock>();
 
-    public void AddStock(int productId, int quantity)
+    public Stock? AddStock(int productId, int quantity)
     {
-        Stock stock = new Stock(StoreId, productId, quantity);
-        Stocks.Add(stock);
+        // Check if a stock with the same store and product already exists
+        bool stockExists = Stocks.Any(s => s.ProductId == productId);
+
+        if (!stockExists)
+        {
+            // Create and add the new stock
+            Stock stock = new Stock(StoreId, productId, quantity);
+            Stocks.Add(stock);
+            return stock;
+        }
+
+        // Return null or handle the case where the stock already exists
+        return null;
+    }
+
+    public Staff AddStaff(string firstName, string lastName, string email, string? phone, byte active)
+    {
+        Staff staff = new Staff(firstName, lastName, email, phone, active, StoreId);
+        Staff.Add(staff);
+        return staff;
     }
 }

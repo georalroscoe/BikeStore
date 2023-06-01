@@ -9,9 +9,9 @@ public class Customer
     Orders = new List<Order>();
             
       }
-    public Customer( int customeriD, string firstName, string lastName, string? phone, string email, string? street, string? city, string? state, string? zipCode) : this()
+    public Customer(  string firstName, string lastName, string? phone, string email, string? street, string? city, string? state, string? zipCode) : this()
     {
-       CustomerId = customeriD;
+      
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;

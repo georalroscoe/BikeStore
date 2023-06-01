@@ -20,10 +20,16 @@ builder.Services.AddScoped<DbContext, BikeStoreContext>()
     .AddTransient<IGenericRepository<Staff>, GenericRepository<Staff>>()
     .AddTransient<IGenericRepository<Stock>, GenericRepository<Stock>>()
     .AddTransient<IGenericRepository<Brand>, GenericRepository<Brand>>()
+    .AddTransient<IGenericRepository<Store>, GenericRepository<Store>>()
+    .AddTransient<IGenericRepository<Stock>, GenericRepository<Stock>>()
+    .AddTransient<IGenericRepository<Customer>, GenericRepository<Customer>>()
     .AddTransient<ICreateProducts, ProductCreator>()
     .AddTransient<ICreateOrders, OrderCreator>()
     .AddTransient<ISeedBrands, BrandSeeder>()
-    .AddTransient<ISeedCategories, CategorySeeder>();
+    .AddTransient<ISeedCategories, CategorySeeder>()
+    .AddTransient<ISeedProducts, ProductSeeder>()
+    .AddTransient<ISeedCustomers, CustomerSeeder>()
+    .AddTransient<ISeedStores, StoreSeeder>();
 
 
 

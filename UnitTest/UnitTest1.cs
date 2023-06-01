@@ -17,251 +17,164 @@ namespace UnitTest
 
 {
     [TestClass]
-    public class UnitTest1
+    public class DatabaseFillerTests
     {
+        private BikeStoreContext _dbContext;
+        private IUnitOfWork _unitOfWork;
+        private ISeedBrands _brandSeeder;
+        private ISeedCategories _categorySeeder;
+        private ISeedProducts _productSeeder;
+        private ISeedCustomers _customerSeeder;
+        private ISeedStores _storeSeeder;
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            var dbContextOptions = new DbContextOptionsBuilder<BikeStoreContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+
+            _dbContext = new BikeStoreContext(dbContextOptions);
+            _unitOfWork = new UnitOfWork(_dbContext);
+            _brandSeeder = new BrandSeeder(_unitOfWork, new GenericRepository<Brand>(_dbContext));
+            _categorySeeder = new CategorySeeder(_unitOfWork, new GenericRepository<Category>(_dbContext));
+            _productSeeder = new ProductSeeder(
+                _unitOfWork,
+                new GenericRepository<Brand>(_dbContext),
+                new GenericRepository<Category>(_dbContext),
+                new GenericRepository<Product>(_dbContext));
+            _customerSeeder = new CustomerSeeder(_unitOfWork, new GenericRepository<Customer>(_dbContext));
+            _storeSeeder = new StoreSeeder(_unitOfWork, new GenericRepository<Store>(_dbContext), new GenericRepository<Staff>(_dbContext), new GenericRepository<Product>(_dbContext), new GenericRepository<Stock>(_dbContext));
+            
+        }
+
         [TestMethod]
         public void FillDatabase()
         {
-            var dbContextOptions = new DbContextOptionsBuilder<BikeStoreContext>()
-    .UseInMemoryDatabase(databaseName: "TestDatabase")
-    .Options;
+            // Define the number of brands you want to seed
+            int numberOfBrands = 5;
 
-            using (var dbContext = new BikeStoreContext(dbContextOptions))
+            // Call the SeedBrands method
+            _brandSeeder.SeedBrands(numberOfBrands);
+
+            // Retrieve the brands added to the DbContext
+            var addedBrands = _dbContext.Brands.ToList();
+
+            // Assert that the count of added brands is equal to the expected number
+            Assert.AreEqual(numberOfBrands, addedBrands.Count);
+
+            // Define the number of categories you want to seed
+            int numberOfCategories = 5;
+
+            // Call the SeedCategories method
+            _categorySeeder.SeedCategories(numberOfCategories);
+
+            // Retrieve the categories added to the DbContext
+            var addedCategories = _dbContext.Categories.ToList();
+
+            // Assert that the count of added categories is equal to the expected number
+            Assert.AreEqual(numberOfCategories, addedCategories.Count);
+
+            // Define the number of products you want to seed
+            int numberOfProducts = 5;
+
+            // Call the SeedProducts method
+            _productSeeder.SeedProducts(numberOfProducts);
+
+            int numberOfCustomers = 40;
+
+            _customerSeeder.SeedCustomers(numberOfCustomers);
+
+            var addedCustomers = _dbContext.Customers.ToList();
+
+            int numberOfStores = 10;
+
+            _storeSeeder.SeedStores(numberOfStores);
+
+            var addedStores = _dbContext.Stores.ToList();
+
+            var addedStock = _dbContext.Stocks.ToList();
+
+            int egg = 8;
+
+
+            
+        }
+        [TestMethod]
+        public void RetrieveCustomers()
+        {
+            // Retrieve the customers from the DbContext
+            var customers = _dbContext.Customers.ToList();
+
+            // Assert that the count of retrieved customers matches the number of seeded customers
+            int expectedCustomerCount = 40;
+            Assert.AreEqual(expectedCustomerCount, customers.Count);
+
+            // Perform additional assertions or verifications on the retrieved customers if needed
+            // ...
+        }
+        [TestMethod]
+        public void TestOrder()
+        {
+            
+       
+            var customers = _dbContext.Customers.ToList();
+
+            int expectedCustomerCount = 40;
+            Assert.AreEqual(expectedCustomerCount, customers.Count);
+
+            var addedCategories = _dbContext.Categories.ToList();
+
+            var addedStaff = _dbContext.Staffs.ToList();
+            // Arrange
+            OrderDto orderDto = new OrderDto
             {
-                // Create an instance of the real UnitOfWork, passing the DbContext
-                var unitOfWork = new UnitOfWork(dbContext);
+                StaffId = _dbContext.Staffs.FirstOrDefault().StaffId,
+                CustomerId = _dbContext.Customers.FirstOrDefault().CustomerId,
+                Products = new List<OrderProductDto>()
+            };
 
-                // Create an instance of your BrandSeeder class, passing the UnitOfWork and the real repository
-                var brandSeeder = new BrandSeeder(unitOfWork, new GenericRepository<Brand>(dbContext));
+            int itemId = 1; // Starting item ID
 
-                // Define the number of brands you want to seed
-                int numberOfBrands = 5;
+            for (int i = 0; i < 1; i++)
+            {
+                int productId = _dbContext.Products.Skip(i).First().ProductId; // Get product ID from seeded products
+                decimal discount = i switch
+                {
+                    0 => 0,    // First order product: 0% discount
+                    1 => 25,   // Second order product: 25% discount
+                    2 => 50,   // Third order product: 50% discount
+                    _ => 0     // Remaining order products: 0% discount
+                };
+                int quantity = new Random().Next(2, 6); // Generate a random quantity between 2 and 5
 
-                // Call the SeedBrands method
-                brandSeeder.SeedBrands(numberOfBrands);
+                orderDto.Products.Add(new OrderProductDto
+                {
+                    ItemId = itemId,
+                    ProductId = productId,
+                    Discount = discount,
+                    Quantity = quantity
+                });
 
-                // Retrieve the brands added to the DbContext
-                var addedBrands = dbContext.Brands.ToList();
-
-                // Assert that the count of added brands is equal to the expected number
-                Assert.AreEqual(numberOfBrands, addedBrands.Count);
-
-                var categorySeeder = new CategorySeeder(unitOfWork, new GenericRepository<Category>(dbContext));
-
-                int numberOfCategories = 5;
-
-                categorySeeder.SeedCategories(numberOfCategories);
-
-                var addedCategories = dbContext.Categories.ToList();
-
-                Assert.AreEqual (numberOfCategories, addedCategories.Count);
-
-
-                var productSeeder = new ProductSeeder(unitOfWork, new GenericRepository<Brand>(dbContext), new GenericRepository<Category>(dbContext), new GenericRepository<Product>(dbContext));
-
-                int numberOfProducts = 5;
-
-                productSeeder.SeedProducts(numberOfProducts);
-
-                Assert.AreEqual(numberOfProducts, 5);
-                
-
+                itemId++; // Increment item ID for the next order product
             }
 
-
-
-
-
-            //        Random random = new Random();
-            //        List<Brand> brandList = new List<Brand>();
-            //        Brand cannondale = new Brand(random.Next(100_000_000, 1_000_000_000), "Cannondale");
-            //        Brand trek = new Brand(random.Next(100_000_000, 1_000_000_000), "Trek");
-            //        Brand canyon = new Brand(random.Next(100_000_000, 1_000_000_000), "Canyon");
-            //        brandList.Add(cannondale);
-            //        brandList.Add(trek);
-            //        brandList.Add(canyon);
-
-            //        new Category(random.Next(100_000_000, 1_000_000_000), "Mountain");
-            //        new Category(random.Next(100_000_000, 1_000_000_000), "Road");
-            //        new Category(random.Next(100_000_000, 1_000_000_000), "Electric");
-            //        new Category(random.Next(100_000_000, 1_000_000_000), "Trail");
-            //        new Category(random.Next(100_000_000, 1_000_000_000), "Kids");
-
-
-
-            //        foreach (var brand in brandList) { 
-
-
-            //            for (int j = 0; j < 5; j++)
-            //            {
-            //                string modelName = GenerateRandomString();
-            //                int categoryNumber = random.Next(0, 5);
-            //                short year = (short)random.Next(2018, 2024);
-            //                decimal price = (decimal)random.Next(700, 5001) / 100;
-            //                brand.AddProduct(random.Next(100_000_000, 1_000_000_000), modelName, categoryNumber, year, price);
-
-            //            }
-
-            //        }
-            //        string GenerateRandomString()
-            //        {
-            //            string[] wordList = {
-            //    "Topstone", "Superfly", "Strive", "Ripmo", "Rascal",
-            //    "Jekyll", "Stache", "Levo", "Fuse", "Ripley",
-            //    "Epic", "Enduro", "Spectral", "Trance", "Domane",
-            //    "Marlin", "Slash", "Remedy", "Fuel", "Hardrock",
-            //    "Blur", "Stumpjumper", "Talon", "X-Caliber", "Giant",
-            //    "Rockhopper", "Anthem", "Roscoe", "Status", "Norco",
-            //    "Process", "Fathom", "Pitch", "Yukon", "Pivot",
-            //    "Tern", "Turbo", "Salsa", "Chameleon", "Warden"
-            //};
-            //            Random random = new Random();
-            //            return wordList[random.Next(wordList.Length)];
-            //        }
-
-            //        List<Customer> customerList = new List<Customer>();
-            //        for (int i = 1; i <= 10; i++)
-            //        {
-            //            string firstName = "Customer" + i;
-            //            string lastName = "Lastname" + i;
-            //            string phone = "Phone" + i;
-            //            string email = "customer" + i + "@example.com";
-            //            string street = "Street " + i;
-            //            string city = "City " + i;
-            //            string state = "State " + i;
-            //            string zipCode = "Zip" + i;
-
-            //            Customer customer = new Customer(random.Next(100_000_000, 1_000_000_000), firstName, lastName, phone, email, street, city, state, zipCode);
-            //           customerList.Add(customer);
-            //        }
-            //        List<Store> storeList = new List<Store>();
-
-            //        for (int i = 1; i <= 3; i++)
-            //        {
-            //            string storeName = "Store " + i;
-            //            string phone = "Phone " + i;
-            //            string email = "store" + i + "@example.com";
-            //            string street = "Street " + i;
-            //            string city = "City " + i;
-            //            string state = "State " + i;
-            //            string zipCode = "Zip " + i;
-
-            //            Store store = new Store(random.Next(100_000_000, 1_000_000_000), storeName, phone, email, street, city, state, zipCode);
-            //            storeList.Add(store);
-            //        }
-            //        List<Staff> staffList = new List<Staff>();
-            //        for (int i = 1; i <= 20; i++)
-            //        {
-            //            string firstName = "Staff" + i;
-            //            string lastName = "Lastname" + i;
-            //            string email = "staff" + i + "@example.com";
-            //            string phone = "Phone" + i;
-            //            byte active = 1;
-            //            int storeId = GetRandomStoreId();
-            //            int? managerId = GetRandomManagerId(storeId);
-
-            //            Store store = storeList.FirstOrDefault(x => x.StoreId== storeId);
-            //            Staff staff = new Staff(random.Next(100_000_000, 1_000_000_000), firstName, lastName, email, phone, active, storeId, managerId);
-            //            staffList.Add(staff);
-            //            store.Staff.Add(staff);
-            //        }
-
-            //        int GetRandomStoreId()
-            //        {
-            //            Random random = new Random();
-            //            var storeIds = storeList.Select(s => s.StoreId).ToList();
-            //            return storeIds[random.Next(0, storeIds.Count)];
-            //        }
-
-            //        // Helper method to get a random manager ID from the same store
-            //        int? GetRandomManagerId(int storeId)
-            //        {
-            //            Random random = new Random();
-            //            var managers = staffList.Where(s => s.StoreId == storeId).ToList();
-            //            if (managers.Count > 0)
-            //                return managers[random.Next(0, managers.Count)].StaffId;
-            //            else
-            //                return null;
-            //        }
-
-
-            //        foreach (var store in storeList)
-            //        {
-            //            for (int i = 0; i < 10; i++)
-            //            {
-            //                int randomProductId = GetRandomProductId();
-            //                int randomQuantity = random.Next(1, 51);
-
-            //                AddStockToStore(store, randomProductId, randomQuantity);
-            //            }
-            //        }
-            //        int GetRandomProductId()
-            //        {
-            //            Random random = new Random();
-            //            var productIds = brandList.SelectMany(b => b.Products.Select(p => p.ProductId)).ToList();
-            //            return productIds[random.Next(0, productIds.Count)];
-            //        }
-
-            //        void AddStockToStore(Store store, int productId, int quantity)
-            //        {
-            //            Stock stock = new Stock(store.StoreId, productId, quantity);
-            //            store.AddStock(stock.ProductId, stock.Quantity);
-            //        }
-            //        //create a load of stock
-            //        //
-            //        int GetRandomStaffId(List<Staff> staffList)
-            //        {
-            //            Random random = new Random();
-            //            var staffIds = staffList.Select(s => s.StaffId).ToList();
-            //            return staffIds[random.Next(0, staffIds.Count)];
-            //        }
-
-            //        int GetRandomCustomerId(List<Customer> customerList)
-            //        {
-            //            Random random = new Random();
-            //            var customerIds = customerList.Select(c => c.CustomerId).ToList();
-            //            return customerIds[random.Next(0, customerIds.Count)];
-            //        }
-
-            //        List<OrderProductDto> orderProductList = new List<OrderProductDto>();
-
-
-            //        for (int i = 0; i < 5; i++)
-            //        {
-            //            int itemId = random.Next(100_000_000, 1_000_000_000);
-            //            int productId = GetRandomProductId(); // Implement this method as mentioned before
-            //            decimal discount = GetRandomDiscount();
-            //            int quantity = random.Next(1, 5);
-
-            //            OrderProductDto orderProductDto = new OrderProductDto
-            //            {
-            //                ItemId = itemId,
-            //                ProductId = productId,
-            //                Discount = discount,
-            //                Quantity = quantity
-            //            };
-
-            //            orderProductList.Add(orderProductDto);
-            //        }
-
-            //        decimal GetRandomDiscount()
-            //        {
-            //            int[] discounts = { 0, 20, 50 };
-            //            return discounts[random.Next(discounts.Length)];
-            //        }
-            //        var orderDto = new OrderDto
-            //        {
-            //            StaffId = GetRandomStaffId(staffList),
-            //            CustomerId = GetRandomCustomerId(customerList),
-            //            Products = orderProductList
-
-            //            // Set properties of the orderDto
-            //        };
-
-            //        Add_ValidOrderDto_CallsRepositoriesAndUnitOfWorkSave(orderDto);
-
+            // Act
+            OrderCreator orderCreator = new OrderCreator(_unitOfWork, new GenericRepository<Customer>(_dbContext), new GenericRepository<Staff>(_dbContext), new GenericRepository<Stock>(_dbContext));
+            orderCreator.Add(orderDto);
 
         }
 
+
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            _dbContext.Dispose();
+        }
     }
+
+
+
+
 }
