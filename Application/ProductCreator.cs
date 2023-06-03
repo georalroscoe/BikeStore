@@ -23,23 +23,27 @@ namespace Application
 
         private readonly IUnitOfWork _uow;
         private readonly IGenericRepository<Brand> _brandRepo;
+        private readonly IGenericRepository<Product> _productRepo;
         
 
-        public ProductCreator(IUnitOfWork uow, IGenericRepository<Brand> brandRepo)
+        public ProductCreator(IUnitOfWork uow, IGenericRepository<Brand> brandRepo, IGenericRepository<Product> productRepo)
         {
             _uow = uow;
             _brandRepo = brandRepo;
+            _productRepo = productRepo;
         }
+
 
         public void Add(ProductDto productDto)
         {
+            var brands = _brandRepo.Get().ToList();
             Brand brand = _brandRepo.GetById(productDto.BrandId);
             if (brand == null)
             {
                 throw new Exception("Brand is null");
             }
 
-            //brand.AddProduct(productDto.ProductName, productDto.CategoryId, productDto.ModelYear, productDto.ListPrice);
+            _productRepo.Insert(brand.AddProduct(productDto.ProductName, productDto.CategoryId, productDto.ModelYear, productDto.ListPrice));
 
             _uow.Save();
             //dto with brand id, catergory id, productName, model year, list price,

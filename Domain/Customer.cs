@@ -23,10 +23,10 @@ public class Customer
 
     }
 
-    public Order AddOrder(int staffId, int storeId)
+    public Order AddOrder(int storeId, int staffId)
     {
 
-        var order = new Order(0, staffId, storeId);
+        var order = new Order(0, storeId, staffId);
         Orders.Add(order);
         return order;
     }

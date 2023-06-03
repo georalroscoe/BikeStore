@@ -7,7 +7,7 @@ public partial class OrderItem
 {
 
     private OrderItem() { }
-    public OrderItem(int itemId, int productId, int quantity,  decimal discount) : this()
+    public OrderItem(int itemId, int productId, int quantity,  decimal discount, decimal listPrice) : this()
     {
        
         ItemId = itemId;
@@ -15,6 +15,7 @@ public partial class OrderItem
         Quantity = quantity;
        
         Discount = discount;
+        ListPrice = listPrice;
 
     }
 

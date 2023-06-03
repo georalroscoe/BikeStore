@@ -26,6 +26,8 @@ namespace UnitTest
         private ISeedProducts _productSeeder;
         private ISeedCustomers _customerSeeder;
         private ISeedStores _storeSeeder;
+        private ICreateOrders _orderCreator;
+        private ICreateProducts _productCreator;
 
         [TestInitialize]
         public void Initialize()
@@ -45,40 +47,41 @@ namespace UnitTest
                 new GenericRepository<Product>(_dbContext));
             _customerSeeder = new CustomerSeeder(_unitOfWork, new GenericRepository<Customer>(_dbContext));
             _storeSeeder = new StoreSeeder(_unitOfWork, new GenericRepository<Store>(_dbContext), new GenericRepository<Staff>(_dbContext), new GenericRepository<Product>(_dbContext), new GenericRepository<Stock>(_dbContext));
-            
+            _orderCreator = new OrderCreator(_unitOfWork, new GenericRepository<Customer>(_dbContext), new GenericRepository<Staff>(_dbContext), new GenericRepository<Stock>(_dbContext), new GenericRepository<Order>(_dbContext), new GenericRepository<OrderItem>(_dbContext));
+            _productCreator = new ProductCreator(_unitOfWork, new GenericRepository<Brand>(_dbContext), new GenericRepository<Product>(_dbContext));
+
         }
 
         [TestMethod]
         public void FillDatabase()
         {
-            // Define the number of brands you want to seed
+            
             int numberOfBrands = 5;
 
-            // Call the SeedBrands method
             _brandSeeder.SeedBrands(numberOfBrands);
 
-            // Retrieve the brands added to the DbContext
+            
             var addedBrands = _dbContext.Brands.ToList();
 
-            // Assert that the count of added brands is equal to the expected number
+            
             Assert.AreEqual(numberOfBrands, addedBrands.Count);
 
-            // Define the number of categories you want to seed
+            
             int numberOfCategories = 5;
 
-            // Call the SeedCategories method
+           
             _categorySeeder.SeedCategories(numberOfCategories);
 
-            // Retrieve the categories added to the DbContext
+          
             var addedCategories = _dbContext.Categories.ToList();
 
-            // Assert that the count of added categories is equal to the expected number
+           
             Assert.AreEqual(numberOfCategories, addedCategories.Count);
 
-            // Define the number of products you want to seed
+           
             int numberOfProducts = 5;
 
-            // Call the SeedProducts method
+           
             _productSeeder.SeedProducts(numberOfProducts);
 
             int numberOfCustomers = 40;
@@ -103,50 +106,37 @@ namespace UnitTest
         [TestMethod]
         public void RetrieveCustomers()
         {
-            // Retrieve the customers from the DbContext
             var customers = _dbContext.Customers.ToList();
 
-            // Assert that the count of retrieved customers matches the number of seeded customers
             int expectedCustomerCount = 40;
             Assert.AreEqual(expectedCustomerCount, customers.Count);
 
-            // Perform additional assertions or verifications on the retrieved customers if needed
-            // ...
         }
         [TestMethod]
         public void TestOrder()
         {
+            Staff staff = _dbContext.Staffs.FirstOrDefault();
             
-       
-            var customers = _dbContext.Customers.ToList();
-
-            int expectedCustomerCount = 40;
-            Assert.AreEqual(expectedCustomerCount, customers.Count);
-
-            var addedCategories = _dbContext.Categories.ToList();
-
-            var addedStaff = _dbContext.Staffs.ToList();
-            // Arrange
             OrderDto orderDto = new OrderDto
             {
-                StaffId = _dbContext.Staffs.FirstOrDefault().StaffId,
+                StaffId = staff.StaffId,
                 CustomerId = _dbContext.Customers.FirstOrDefault().CustomerId,
                 Products = new List<OrderProductDto>()
             };
 
-            int itemId = 1; // Starting item ID
+            int itemId = 1;
 
-            for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 10; i++)
             {
-                int productId = _dbContext.Products.Skip(i).First().ProductId; // Get product ID from seeded products
+                int productId = _dbContext.Products.Skip(i).First().ProductId;
                 decimal discount = i switch
                 {
-                    0 => 0,    // First order product: 0% discount
-                    1 => 25,   // Second order product: 25% discount
-                    2 => 50,   // Third order product: 50% discount
-                    _ => 0     // Remaining order products: 0% discount
+                    0 => 0,
+                    1 => 25,
+                    2 => 50,
+                    _ => 0
                 };
-                int quantity = new Random().Next(2, 6); // Generate a random quantity between 2 and 5
+                int quantity = new Random().Next(2, 6);
 
                 orderDto.Products.Add(new OrderProductDto
                 {
@@ -156,14 +146,80 @@ namespace UnitTest
                     Quantity = quantity
                 });
 
-                itemId++; // Increment item ID for the next order product
+                itemId++;
             }
 
-            // Act
-            OrderCreator orderCreator = new OrderCreator(_unitOfWork, new GenericRepository<Customer>(_dbContext), new GenericRepository<Staff>(_dbContext), new GenericRepository<Stock>(_dbContext));
-            orderCreator.Add(orderDto);
+            
+            var initialStockQuantities = new Dictionary<int, int>();
+            foreach (var product in orderDto.Products)
+            {
+                
+
+                var stock = _dbContext.Stocks.FirstOrDefault(s => s.ProductId == product.ProductId && s.StoreId == staff.StoreId);
+                if (stock == null)
+                {
+                   
+                    continue; 
+                }
+
+                initialStockQuantities[product.ProductId] = stock.Quantity;
+            }
+            
+            _orderCreator.Add(orderDto);
+
+          
+            var createdOrder = _dbContext.Orders.FirstOrDefault();
+            Assert.IsNotNull(createdOrder);
+            Assert.AreEqual(orderDto.StaffId, createdOrder.StaffId);
+            Assert.AreEqual(orderDto.CustomerId, createdOrder.CustomerId);
+
+            foreach (var product in orderDto.Products)
+            {
+                var stock = _dbContext.Stocks.FirstOrDefault(s => s.ProductId == product.ProductId && s.StoreId == staff.StoreId);
+                if (stock != null)
+                {
+                    var initialQuantity = initialStockQuantities[product.ProductId];
+                    var expectedQuantity = initialQuantity - product.Quantity;
+                    Assert.AreEqual(expectedQuantity, stock.Quantity);
+                }
+            }
+        }
+
+
+
+
+    
+
+    [TestMethod]
+        public void RetrieCustomers()
+        {
+           
+            
+
+            var productDto = new ProductDto
+            {
+                ProductName = "Product",
+                BrandId = 2,
+                CategoryId = 1,
+                ModelYear = 2023,
+                ListPrice = 9.99m
+            };
+
+            _productCreator.Add(productDto);
+
+          
+            var addedProduct = _dbContext.Products.FirstOrDefault(x => x.ProductName == productDto.ProductName);
+            Assert.IsNotNull(addedProduct);
+            Assert.AreEqual(productDto.ProductName, addedProduct.ProductName);
+            Assert.AreEqual(productDto.BrandId, addedProduct.BrandId);
+            Assert.AreEqual(productDto.CategoryId, addedProduct.CategoryId);
+            Assert.AreEqual(productDto.ModelYear, addedProduct.ModelYear);
+            Assert.AreEqual(productDto.ListPrice, addedProduct.ListPrice);
 
         }
+
+       
+        
 
 
 

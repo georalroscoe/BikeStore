@@ -25,11 +25,11 @@ public class Order
 
     }
 
-    public void FillOrder(byte[] currentTimeStamp, Stock stock, int itemId, int productId,  int quantity, decimal discount)
+    public void FillOrder(byte[] currentTimeStamp, Stock stock, int itemId, int productId,  int quantity, decimal discount, decimal listPrice)
     {
-       stock.TakeProduct(currentTimeStamp, quantity);
+       bool validRetrieval = stock.TakeProduct(currentTimeStamp, quantity);
       
-        OrderItem orderItem = new OrderItem(itemId, productId, quantity,  discount);
+        OrderItem orderItem = new OrderItem(itemId, productId, quantity,  discount, listPrice);
         OrderItems.Add(orderItem);
         
         return;

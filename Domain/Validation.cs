@@ -30,9 +30,9 @@ namespace Domain
 
         public List<string> Errors { get; private set; }
 
-        public void AddOrderItem(Stock stock, int itemId, int productId, int quantity, decimal discount)
+        public void AddOrderItem(Stock stock, int itemId, int productId, int quantity, decimal discount, decimal listPrice)
         {
-            OrderItem orderItem = new OrderItem(itemId, productId, quantity, discount);
+            OrderItem orderItem = new OrderItem(itemId, productId, quantity, discount, listPrice);
             OrderItems.Add(orderItem);
             Stocks.Add(stock);
             return;
@@ -47,6 +47,7 @@ namespace Domain
                 {
                     Errors.Add($"The asking quantity for {item.ProductId} is 0 or negative ");
                 }
+                
                 int? stockQuantity = Stocks.FirstOrDefault(x => x.ProductId == item.ProductId).Quantity;
                 if (stockQuantity == null)
                 {

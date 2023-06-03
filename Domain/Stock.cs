@@ -35,7 +35,7 @@ public class Stock
             
             throw new Exception("Concurrency conflict occurred. Stock has been modified by another transaction.");
         }
-        if (quantity >= Quantity)
+        if (quantity <= Quantity)
         {
             Quantity -= quantity;
             return true;
