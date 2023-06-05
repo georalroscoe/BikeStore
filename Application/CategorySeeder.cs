@@ -37,7 +37,7 @@ namespace Application
             for (int i = 0; i < numberOfCategories; i++)
             {
                 
-                string categoryName = "Category" + $"{i}"; // Replace this with your own logic to generate category names
+                string categoryName = "Category" + $"{i}";
                 Category category = new Category(categoryName);
                 _categoryRepo.Insert(category);
             }

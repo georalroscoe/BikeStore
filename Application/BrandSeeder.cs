@@ -37,11 +37,10 @@ namespace Application
             for (int i = 0; i < numberOfBrands; i++)
             {
                 
-                string brandName = "Brand" + $"{i}"; // Replace this with your own logic to generate brand names
+                string brandName = "Brand" + $"{i}"; 
                 Brand brand = new Brand(brandName);
                 _brandRepo.Insert(brand);
-                // Perform any additional operations with the created brand
-                // For example, you could add it to a list, store it in a database, or perform other actions
+                
                 
             }
             _uow.Save();

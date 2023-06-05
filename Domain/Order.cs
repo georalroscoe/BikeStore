@@ -25,14 +25,14 @@ public class Order
 
     }
 
-    public void FillOrder(byte[] currentTimeStamp, Stock stock, int itemId, int productId,  int quantity, decimal discount, decimal listPrice)
+    public bool FillOrder(byte[] currentTimeStamp, Stock stock, int itemId, int productId,  int quantity, decimal discount, decimal listPrice)
     {
        bool validRetrieval = stock.TakeProduct(currentTimeStamp, quantity);
       
         OrderItem orderItem = new OrderItem(itemId, productId, quantity,  discount, listPrice);
         OrderItems.Add(orderItem);
         
-        return;
+        return validRetrieval;
     }
 
 

@@ -60,7 +60,7 @@ namespace Application
             }
 
             Random random = new Random();
-            //add staff
+            
             foreach(Store store in stores)
             {
                 for (int i = 0; i < random.Next(11, 50); i++)

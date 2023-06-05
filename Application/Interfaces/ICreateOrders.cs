@@ -9,6 +9,6 @@ namespace Application.Interfaces
 {
     public interface ICreateOrders
     {
-        void Add(OrderDto orderDto);
+        List<OrderProductDto> Add(OrderDto orderDto);
     }
 }

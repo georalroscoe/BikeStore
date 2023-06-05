@@ -6,18 +6,21 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-    public class Validation
+    public class OrderContainer
     {
 
-        private Validation()
+        private OrderContainer()
         {
             OrderItems = new List<OrderItem>();
+            Errors = new List<string>();
+            
         }
 
-        public Validation(int storeId) : this()
+        public OrderContainer(int storeId, List<Stock> stocks) : this()
         {
 
             StoreId = storeId;
+            Stocks = stocks; 
         }
 
         public int StoreId { get; private set; }
@@ -63,7 +66,7 @@ namespace Domain
                 //}
 
             }
-            if (Errors == null)
+            if (Errors.Count == 0)
             {
                 IsValid = true;
             }

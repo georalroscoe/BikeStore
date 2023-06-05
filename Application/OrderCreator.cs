@@ -39,12 +39,13 @@ namespace Application
             
         }
 
-        public void Add(OrderDto orderDto)
+        public List<OrderProductDto> Add(OrderDto orderDto)
         {
             var staff = _staffRepo.GetById(orderDto.StaffId);
             var customer = _customerRepo.GetById(orderDto.CustomerId);
 
-            var stocks = _stockRepo.Get().ToList();
+            var stocks = _stockRepo.Get(x => x.StoreId == staff.StoreId).ToList();
+            List<OrderProductDto> orderProductDtoList= new List<OrderProductDto>();
             
             if (customer == null)
             {
@@ -52,7 +53,34 @@ namespace Application
                 //create a new customer, would need to go back to api and request more info from user
             }
 
-            Validation validation = new Validation(staff.StoreId);
+
+            //Load Order container with all info that you need
+
+            //put all stocks in it for that store
+            //put all products in it and staff and customer
+
+
+
+            //var order = customer.CreateOrder(orderContainer); // hold info as well so can validate
+            //if (!orderContainer.IsValid)
+            //{
+            //    return Dtos with errors
+            //}
+
+            //return Dtos from order;
+
+            //put 100k orders into azure database 
+            //some customers go to an actual store and get served by staff member but they are introducing a website where they can fill an iorder with stcok from any of the stores (not a store specific check)
+            //Look up strategy pattern (for when theres multiple cases) - 
+            //look up blocking queue 
+            //look up changing the behaviour for different cases
+
+
+
+
+            OrderContainer orderContainer = new OrderContainer(staff.StoreId, stocks);
+
+
             Order newOrder = customer.AddOrder(staff.StoreId, staff.StaffId);
             _orderRepo.Insert(newOrder);
             
@@ -66,8 +94,9 @@ namespace Application
                     throw new Exception("Product does not exist in stock list");
                 }
                 decimal listPrice = stock.Product.ListPrice;
-                validation.AddOrderItem(stock, orderProductDto.ItemId, orderProductDto.ProductId, orderProductDto.Quantity, orderProductDto.Discount, listPrice);
-               
+                orderContainer.AddOrderItem(stock, orderProductDto.ItemId, orderProductDto.ProductId, orderProductDto.Quantity, orderProductDto.Discount, listPrice);
+                
+              
 
 
             }
@@ -90,6 +119,7 @@ namespace Application
                 Stock? stock = _stockRepo.Get(x => x.StoreId == staff.StoreId && x.ProductId == orderProductDto.ProductId).FirstOrDefault();
                 if (stock == null)
                 {
+                    orderProductDtoList.Add(orderProductDto);
                     continue;
                     throw new Exception("Product does not exist in stock list");
                 }
@@ -97,8 +127,10 @@ namespace Application
                 var currentTimeStamp = stock.TimeStamp;
                 
 
-                newOrder.FillOrder(currentTimeStamp, stock, orderProductDto.ItemId, orderProductDto.ProductId, orderProductDto.Quantity, orderProductDto.Discount, listPrice);
-
+                bool validRetrieval = newOrder.FillOrder(currentTimeStamp, stock, orderProductDto.ItemId, orderProductDto.ProductId, orderProductDto.Quantity, orderProductDto.Discount, listPrice);
+                if(!validRetrieval) {
+                    orderProductDtoList.Add(orderProductDto);
+                }
 
             }
 
@@ -106,6 +138,8 @@ namespace Application
 
 
             _uow.Save();
+
+            return orderProductDtoList;
           
         }
 

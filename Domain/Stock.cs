@@ -44,7 +44,7 @@ public class Stock
         {
             return false;
         }
-    }
+    }//how to implment optimistic ocncurrency with ef 
 
     private bool IsTimestampValid(byte[] currentTimestamp)
     {

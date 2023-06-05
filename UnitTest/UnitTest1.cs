@@ -53,10 +53,10 @@ namespace UnitTest
         }
 
         [TestMethod]
-        public void FillDatabase()
+        public void aFillDatabase()
         {
             
-            int numberOfBrands = 5;
+            int numberOfBrands = 10;
 
             _brandSeeder.SeedBrands(numberOfBrands);
 
@@ -67,7 +67,7 @@ namespace UnitTest
             Assert.AreEqual(numberOfBrands, addedBrands.Count);
 
             
-            int numberOfCategories = 5;
+            int numberOfCategories = 10;
 
            
             _categorySeeder.SeedCategories(numberOfCategories);
@@ -79,18 +79,18 @@ namespace UnitTest
             Assert.AreEqual(numberOfCategories, addedCategories.Count);
 
            
-            int numberOfProducts = 5;
+            int numberOfProducts = 25;
 
            
             _productSeeder.SeedProducts(numberOfProducts);
 
-            int numberOfCustomers = 40;
+            int numberOfCustomers = 100;
 
             _customerSeeder.SeedCustomers(numberOfCustomers);
 
             var addedCustomers = _dbContext.Customers.ToList();
 
-            int numberOfStores = 10;
+            int numberOfStores = 30;
 
             _storeSeeder.SeedStores(numberOfStores);
 
@@ -98,22 +98,20 @@ namespace UnitTest
 
             var addedStock = _dbContext.Stocks.ToList();
 
-            int egg = 8;
-
 
             
         }
         [TestMethod]
-        public void RetrieveCustomers()
+        public void bRetrieveCustomers()
         {
             var customers = _dbContext.Customers.ToList();
 
-            int expectedCustomerCount = 40;
+            int expectedCustomerCount = 100;
             Assert.AreEqual(expectedCustomerCount, customers.Count);
 
         }
         [TestMethod]
-        public void TestOrder()
+        public void cTestOrder()
         {
             Staff staff = _dbContext.Staffs.FirstOrDefault();
             
@@ -126,7 +124,7 @@ namespace UnitTest
 
             int itemId = 1;
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 160; i++)
             {
                 int productId = _dbContext.Products.Skip(i).First().ProductId;
                 decimal discount = i switch
@@ -136,7 +134,7 @@ namespace UnitTest
                     2 => 50,
                     _ => 0
                 };
-                int quantity = new Random().Next(2, 6);
+                int quantity = new Random().Next(2, 5);
 
                 orderDto.Products.Add(new OrderProductDto
                 {
@@ -165,7 +163,7 @@ namespace UnitTest
                 initialStockQuantities[product.ProductId] = stock.Quantity;
             }
             
-            _orderCreator.Add(orderDto);
+            int completedTransactions = _orderCreator.Add(orderDto).Count;
 
           
             var createdOrder = _dbContext.Orders.FirstOrDefault();
@@ -173,6 +171,7 @@ namespace UnitTest
             Assert.AreEqual(orderDto.StaffId, createdOrder.StaffId);
             Assert.AreEqual(orderDto.CustomerId, createdOrder.CustomerId);
 
+            int expectedTransactions = orderDto.Products.Count;
             foreach (var product in orderDto.Products)
             {
                 var stock = _dbContext.Stocks.FirstOrDefault(s => s.ProductId == product.ProductId && s.StoreId == staff.StoreId);
@@ -181,8 +180,13 @@ namespace UnitTest
                     var initialQuantity = initialStockQuantities[product.ProductId];
                     var expectedQuantity = initialQuantity - product.Quantity;
                     Assert.AreEqual(expectedQuantity, stock.Quantity);
+                    expectedTransactions--;
                 }
             }
+
+            Assert.AreEqual(expectedTransactions, completedTransactions);
+
+          
         }
 
 
@@ -191,7 +195,7 @@ namespace UnitTest
     
 
     [TestMethod]
-        public void RetrieCustomers()
+        public void dAddProductTest()
         {
            
             
