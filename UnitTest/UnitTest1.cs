@@ -109,124 +109,164 @@ namespace UnitTest
         //    _dbContext.Customers.RemoveRange(customers);
         //    _dbContext.SaveChanges();
         //}
+
+        //[TestMethod]
+        //public void ClearOrderAndOrderItems()
+        //{
+        //    var orders = _dbContext.Orders.ToList();
+        //    _dbContext.Orders.RemoveRange(orders);
+
+        //    var orderItems = _dbContext.OrderItems.ToList();
+        //    _dbContext.OrderItems.RemoveRange(orderItems);
+
+        //    _dbContext.SaveChanges();
+        //}
+
         [TestMethod]
         public void cTestOrder()
         {
-            Staff staff = _dbContext.Staffs.FirstOrDefault();
 
-            OrderDto orderDto = new OrderDto
+            int GetRandomStaffId()
             {
-                StaffId = staff.StaffId,
-                CustomerId = _dbContext.Customers.FirstOrDefault().CustomerId,
-                Products = new List<OrderProductDto>()
-            };
+                int totalStaffCount = _dbContext.Staffs.Count();
+                int randomIndex = new Random().Next(totalStaffCount);
 
-            int itemId = 1;
+                return _dbContext.Staffs.Skip(randomIndex).Select(s => s.StaffId).FirstOrDefault();
+            }
 
-            for (int i = 50; i < 52; i++)
+            int GetRandomCustomerId()
             {
-                int productId = _dbContext.Products.Skip(i).First().ProductId;
-                decimal discount = i switch
+                int totalCustomerCount = _dbContext.Customers.Count();
+                int randomIndex = new Random().Next(totalCustomerCount);
+
+                return _dbContext.Customers.Skip(randomIndex).Select(c => c.CustomerId).FirstOrDefault();
+            }
+
+            int GetRandomProductId()
+            {
+                int totalProductCount = _dbContext.Products.Count();
+                int randomIndex = new Random().Next(totalProductCount);
+
+                return _dbContext.Products.Skip(randomIndex).Select(p => p.ProductId).FirstOrDefault();
+            }
+
+            decimal GetRandomDiscount()
+            {
+                int[] availableDiscounts = { 0, 10, 20, 30, 40, 50 };
+                int randomIndex = new Random().Next(availableDiscounts.Length);
+
+                return availableDiscounts[randomIndex];
+            }
+
+            int[] GetShuffledProductIds()
+            {
+                var productIds = _dbContext.Products.Select(p => p.ProductId).ToArray();
+                int n = productIds.Length;
+
+                // Fisher-Yates shuffle algorithm
+                for (int i = n - 1; i > 0; i--)
                 {
-                    0 => 0,
-                    1 => 25,
-                    2 => 50,
-                    _ => 0
+                    int j = new Random().Next(i + 1);
+                    int temp = productIds[i];
+                    productIds[i] = productIds[j];
+                    productIds[j] = temp;
+                }
+
+                return productIds;
+            }
+
+            int numberOfOrders = 50;
+            int numberOfProducts = 10;
+
+            List<ErrorOrderDto> errorList = new List<ErrorOrderDto>();
+
+            for (int orderCount = 0; orderCount < numberOfOrders; orderCount++)
+            {
+                HashSet<int> usedProductIds = new HashSet<int>();
+
+                OrderDto orderDto = new OrderDto
+                {
+                    StaffId = GetRandomStaffId(),
+                    CustomerId = GetRandomCustomerId(),
+                    Products = new List<OrderProductDto>()
                 };
-                int quantity = new Random().Next(2, 5);
 
-                orderDto.Products.Add(new OrderProductDto
+                for (int productCount = 0; productCount < numberOfProducts; productCount++)
                 {
-                    ItemId = itemId,
-                    ProductId = productId,
-                    Discount = discount,
-                    Quantity = quantity
-                });
+                    int productId;
+                    do
+                    {
+                        productId = GetRandomProductId();
+                    } while (usedProductIds.Contains(productId));
 
-                itemId++;
+                    usedProductIds.Add(productId);
+
+                    decimal discount = GetRandomDiscount();
+                    int quantity = new Random().Next(1, 6);
+
+                    orderDto.Products.Add(new OrderProductDto
+                    {
+                        ItemId = productCount + 1,
+                        ProductId = productId,
+                        Discount = discount,
+                        Quantity = quantity
+                    });
+                }
+
+                var errorDto = (_orderCreator.Add(orderDto));
+                if (errorDto.ItemErrors.Count > 0)
+                {
+                    errorList.Add(errorDto);
+                }
             }
 
 
-            //var initialStockQuantities = new Dictionary<int, int>();
-            //foreach (var product in orderDto.Products)
-            //{
 
 
-            //    var stock = _dbContext.Stocks.FirstOrDefault(s => s.ProductId == product.ProductId && s.StoreId == staff.StoreId);
-            //    if (stock == null)
-            //    {
-
-            //        continue;
-            //    }
-
-            //    initialStockQuantities[product.ProductId] = stock.Quantity;
-            //}
-
-            _orderCreator.Add(orderDto);
 
 
-            //var createdOrder = _dbContext.Orders.FirstOrDefault();
-            //Assert.IsNotNull(createdOrder);
-            //Assert.AreEqual(orderDto.StaffId, createdOrder.StaffId);
-            //Assert.AreEqual(orderDto.CustomerId, createdOrder.CustomerId);
 
-            //int expectedTransactions = orderDto.Products.Count;
-            //foreach (var product in orderDto.Products)
-            //{
-            //    var stock = _dbContext.Stocks.FirstOrDefault(s => s.ProductId == product.ProductId && s.StoreId == staff.StoreId);
-            //    if (stock != null)
-            //    {
-            //        var initialQuantity = initialStockQuantities[product.ProductId];
-            //        var expectedQuantity = initialQuantity - product.Quantity;
-            //        Assert.AreEqual(expectedQuantity, stock.Quantity);
-            //        expectedTransactions--;
-            //    }
-            //}
-
-            //Assert.AreEqual(expectedTransactions, completedTransactions);
+            var sr = 5;
 
 
         }
 
 
 
+            //[TestMethod]
+            //    public void dAddProductTest()
+            //    {
 
 
 
-        //[TestMethod]
-        //    public void dAddProductTest()
-        //    {
+            //        var productDto = new ProductDto
+            //        {
+            //            ProductName = "Product",
+            //            BrandId = 2,
+            //            CategoryId = 1,
+            //            ModelYear = 2023,
+            //            ListPrice = 9.99m
+            //        };
+
+            //        _productCreator.Add(productDto);
+
+
+            //        var addedProduct = _dbContext.Products.FirstOrDefault(x => x.ProductName == productDto.ProductName);
+            //        Assert.IsNotNull(addedProduct);
+            //        Assert.AreEqual(productDto.ProductName, addedProduct.ProductName);
+            //        Assert.AreEqual(productDto.BrandId, addedProduct.BrandId);
+            //        Assert.AreEqual(productDto.CategoryId, addedProduct.CategoryId);
+            //        Assert.AreEqual(productDto.ModelYear, addedProduct.ModelYear);
+            //        Assert.AreEqual(productDto.ListPrice, addedProduct.ListPrice);
+
+            //    }
 
 
 
-        //        var productDto = new ProductDto
-        //        {
-        //            ProductName = "Product",
-        //            BrandId = 2,
-        //            CategoryId = 1,
-        //            ModelYear = 2023,
-        //            ListPrice = 9.99m
-        //        };
+            //}
 
-        //        _productCreator.Add(productDto);
-
-
-        //        var addedProduct = _dbContext.Products.FirstOrDefault(x => x.ProductName == productDto.ProductName);
-        //        Assert.IsNotNull(addedProduct);
-        //        Assert.AreEqual(productDto.ProductName, addedProduct.ProductName);
-        //        Assert.AreEqual(productDto.BrandId, addedProduct.BrandId);
-        //        Assert.AreEqual(productDto.CategoryId, addedProduct.CategoryId);
-        //        Assert.AreEqual(productDto.ModelYear, addedProduct.ModelYear);
-        //        Assert.AreEqual(productDto.ListPrice, addedProduct.ListPrice);
-
-        //    }
-
-
-
-
-
-
-        [TestCleanup]
+        
+            [TestCleanup]
         public void Cleanup()
         {
             _dbContext.Dispose();

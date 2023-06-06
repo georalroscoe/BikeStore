@@ -14,7 +14,7 @@ using Application.Interfaces;
 using Dtos;
 
 using System.Xml;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace Application
 { 
@@ -97,13 +97,11 @@ namespace Application
             {
                 StaffId = orderContainer.StaffId,
                 CustomerId = customer.CustomerId
-
+                //order identifier needed
                
             };
             if (!orderContainer.IsValid)
             {
-
-
 
                 errorDto.ItemErrors = orderContainer.Errors.Select(kv => new ErrorOrderItemDto
                 {
@@ -111,13 +109,39 @@ namespace Application
                     Error = kv.Value
                 }).ToList();
                 
-                throw new Exception("reached");
+                return errorDto;
             }
 
             Order order = customer.CreateOrder(orderContainer);
             _orderRepo.Insert(order);
 
-            _uow.Save();
+            try
+            {
+                
+
+                _uow.Save();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                foreach (var entry in ex.Entries)
+                {
+                    if (entry.Entity is Stock stock)
+                    {
+                        var databaseValues = entry.GetDatabaseValues();
+
+                        if (databaseValues != null)
+                        {
+                            
+                            var databaseQuantity = (int)databaseValues[nameof(Stock.Quantity)];
+                            stock.RollbackQuantity(databaseQuantity);
+                           
+                        }
+                        
+                    }
+                }
+            }
+
+
 
             return errorDto;
 
