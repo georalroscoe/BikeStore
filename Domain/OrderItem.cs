@@ -16,6 +16,7 @@ public partial class OrderItem
        
         Discount = discount;
         ListPrice = listPrice;
+        
 
     }
 

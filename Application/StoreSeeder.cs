@@ -43,32 +43,34 @@ namespace Application
 
         public void SeedStores(int numberOfStores)
         {
+            Random random = new Random();
             List<Store> stores = new List<Store>();
             for (int i = 1; i <= numberOfStores; i++)
             {
                 string storeName = "Store " + i;
-                string phone = "Phone " + i;
+                string phone = random.Next(100_000_000, 1_000_000_000).ToString("D9");
                 string email = "store" + i + "@example.com";
                 string street = "Street " + i;
                 string city = "City " + i;
                 string state = "State " + i;
-                string zipCode = "Zip " + i;
+                string zipCode = random.Next(1_000, 10_000).ToString("D5");
 
                 Store store = new Store(storeName, phone, email, street, city, state, zipCode);
                 _storeRepo.Insert(store);
                 stores.Add(store);
             }
 
-            Random random = new Random();
+            int j = 0;
             
             foreach(Store store in stores)
             {
+
                 for (int i = 0; i < random.Next(11, 50); i++)
                 {
-                    string firstName = "Staff" + i;
-                    string lastName = "Lastname" + i;
-                    string email = "staff" + i + "@example.com";
-                    string phone = "Phone" + i;
+                    string firstName = "Staff" + j + "_" + i;
+                    string lastName = "Lastname" + j + "_" + i;
+                    string email = "staff" + j + "_" + i + "@example.com";
+                    string phone = random.Next(100_000_000, 1_000_000_000).ToString("D9");
                     byte active = 1;
 
                     Staff staff = store.AddStaff(firstName, lastName, email, phone, active);
@@ -76,28 +78,44 @@ namespace Application
                     
                   
                 }
-                for (int i = 0; i < random.Next(5, 20); i++)
-                {
-                    int randomProductId = GetRandomProductId();
 
+               
+
+                for (int i = 6; i <= 607; i++)
+                {
+                    int randomSkip = random.Next(1, 101);
+
+                    // Check if the random number is within the desired skip probability (e.g., 35%)
+                    if (randomSkip <= 2)
+                    {
+                        // Add the current iteration to the set of skipped iterations
+                      
+                        continue;
+                    }
+                    
+                    //int randomProductId = GetRandomProductId();
                     int randomQuantity = random.Next(1, 51);
 
-                    Stock? stock = store.AddStock(randomProductId, randomQuantity);
+                    Stock? stock = store.AddStock(i, randomQuantity);
 
                     if (stock != null)
                     {
                         _stockRepo.Insert(stock);
                     }
+
+                    
                     
                 }
+                j++;
+
             }
-            int GetRandomProductId()
-            {
-                var productIds = _productRepo.Get().Select(p => p.ProductId).ToList();
-                Random random = new Random();
-                int randomIndex = random.Next(0, productIds.Count);
-                return productIds[randomIndex];
-            }
+            //int GetRandomProductId()
+            //{
+            //    var productIds = _productRepo.Get().Select(p => p.ProductId).ToList();
+            //    Random random = new Random();
+            //    int randomIndex = random.Next(0, productIds.Count);
+            //    return productIds[randomIndex];
+            //}
 
 
 

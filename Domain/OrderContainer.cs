@@ -8,77 +8,82 @@ namespace Domain
 {
     public class OrderContainer
     {
-
         private OrderContainer()
         {
             OrderItems = new List<OrderItem>();
-            Errors = new List<string>();
-            
+            Errors = new Dictionary<OrderItem, string>(); // Initialize Errors as a dictionary
         }
 
-        public OrderContainer(int storeId, List<Stock> stocks) : this()
+        public OrderContainer(int staffId, int storeId, List<Stock> stocks, List<Product> products) : this()
         {
-
+            StaffId = staffId;
             StoreId = storeId;
-            Stocks = stocks; 
+            Stocks = stocks;
+            Products = products;
+           
         }
 
+        public int StaffId { get; private set; }
         public int StoreId { get; private set; }
-
         public bool IsValid { get; private set; }
-
         public List<OrderItem> OrderItems { get; private set; } = new List<OrderItem>();
-
         public List<Stock> Stocks { get; private set; } = new List<Stock>();
+        public List<Product> Products { get; private set; } = new List<Product>();
+        public Dictionary<OrderItem, string> Errors { get; private set; } // Change Errors to a dictionary
 
-        public List<string> Errors { get; private set; }
-
-        public void AddOrderItem(Stock stock, int itemId, int productId, int quantity, decimal discount, decimal listPrice)
+        public void AddOrderItem(int itemId, int productId, int quantity, decimal discount)
         {
+            decimal listPrice = Products.FirstOrDefault(x => x.ProductId == productId).ListPrice;
+            
             OrderItem orderItem = new OrderItem(itemId, productId, quantity, discount, listPrice);
             OrderItems.Add(orderItem);
-            Stocks.Add(stock);
-            return;
         }
 
-
-        public void isValid()
+        public void Validate()
         {
-            foreach (var item in OrderItems)
+            foreach (OrderItem orderItem in OrderItems)
             {
-                if (item.Quantity < 1)
-                {
-                    Errors.Add($"The asking quantity for {item.ProductId} is 0 or negative ");
-                }
-                
-                int? stockQuantity = Stocks.FirstOrDefault(x => x.ProductId == item.ProductId).Quantity;
-                if (stockQuantity == null)
-                {
-                    Errors.Add($"No matching product in the stock list for {item.ProductId}");
-                }
-                if (stockQuantity < item.Quantity)
-                {
-                    Errors.Add($"Quantity in the stock is too low for {item.ProductId}");
-                }
-                //if (item.Product == null)
-                //{
-                //    Errors.Add($"There is no {item.ProductId} product");
-                //}
+                var stock = Stocks.FirstOrDefault(x => x.ProductId == orderItem.ProductId);
 
+                if (orderItem.Quantity < 1)
+                {
+                    if (Errors.ContainsKey(orderItem))
+                    {
+                        Errors[orderItem] += $", The asking quantity for {orderItem.ProductId} is 0 or negative";
+                    }
+                    else
+                    {
+                        Errors.Add(orderItem, $"The asking quantity for {orderItem.ProductId} is 0 or negative");
+                    }
+                }
+
+                if (stock == null)
+                {
+                    if (Errors.ContainsKey(orderItem))
+                    {
+                        Errors[orderItem] += $", No matching product in the stock list for {orderItem.ProductId}";
+                    }
+                    else
+                    {
+                        Errors.Add(orderItem, $"No matching product in the stock list for {orderItem.ProductId}");
+                    }
+                    continue;
+                }
+
+                if (stock.Quantity < orderItem.Quantity)
+                {
+                    if (Errors.ContainsKey(orderItem))
+                    {
+                        Errors[orderItem] += $", Quantity in the stock is too low for {orderItem.ProductId}";
+                    }
+                    else
+                    {
+                        Errors.Add(orderItem, $"Quantity in the stock is too low for {orderItem.ProductId}");
+                    }
+                }
             }
-            if (Errors.Count == 0)
-            {
-                IsValid = true;
-            }
+            IsValid = Errors.Count == 0;
         }
-        //create a domain in the validation domain object and put the logic for tha tvalidation in the domain objec , stock levels for all
-        //the diff products in the domain object, you want the store, all of your orders, create all orders and put them in validaiton object,
-        //check if its valid , have isvalid property on there which will return true if the list of problems is empty 
 
-        /* is the quantitiy valid
-         * is there stock
-         * does the product exist
-         * is the store id valid
-         */
     }
 }

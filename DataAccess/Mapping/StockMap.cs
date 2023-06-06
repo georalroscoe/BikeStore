@@ -24,10 +24,10 @@ namespace DataAccess.Mapping
             builder.Property(e => e.StoreId).HasColumnName("store_id");
             builder.Property(e => e.ProductId).HasColumnName("product_id");
             builder.Property(e => e.Quantity).HasColumnName("quantity");
-            builder.Property(s => s.TimeStamp)
-                                            .HasColumnName("Timestamp")
-                                            .HasColumnType("rowversion")
-                                            .IsConcurrencyToken();
+            //builder.Property(s => s.TimeStamp)
+            //                                .HasColumnName("Timestamp")
+            //                                .HasColumnType("rowversion")
+            //                                .IsConcurrencyToken();
 
             builder.HasOne(d => d.Product).WithMany(p => p.Stocks)
                 .HasForeignKey(d => d.ProductId)

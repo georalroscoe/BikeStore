@@ -36,24 +36,26 @@ namespace Application
 
         public void SeedCustomers(int numberOfCustomers)
         {
-            
+            Random random = new Random();
+
             for (int i = 1; i <= numberOfCustomers; i++)
             {
                 string firstName = "Customer" + i;
                 string lastName = "Lastname" + i;
-                string phone = "Phone" + i;
+                string phone = random.Next(100_000_000, 1_000_000_000).ToString("D9");
                 string email = "customer" + i + "@example.com";
                 string street = "Street " + i;
                 string city = "City " + i;
                 string state = "State " + i;
-                string zipCode = "Zip" + i;
+                string zipCode = random.Next(1_000, 10_000).ToString("D5");
 
                 Customer customer = new Customer(firstName, lastName, phone, email, street, city, state, zipCode);
                 _customerRepo.Insert(customer);
             }
-            _uow.Save();
 
+            _uow.Save();
         }
+
 
 
 

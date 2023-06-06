@@ -23,10 +23,18 @@ public class Customer
 
     }
 
+    public Order CreateOrder(OrderContainer orderContainer)
+    {
+        var newOrder = new Order(1, orderContainer.StoreId, orderContainer.StaffId, CustomerId);
+        Orders.Add(newOrder);
+        newOrder.FillOrder(orderContainer.Stocks, orderContainer.OrderItems);
+        return newOrder;
+    }
+
     public Order AddOrder(int storeId, int staffId)
     {
 
-        var order = new Order(0, storeId, staffId);
+        var order = new Order(0, storeId, staffId, CustomerId);
         Orders.Add(order);
         return order;
     }

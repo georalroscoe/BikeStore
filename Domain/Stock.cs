@@ -12,7 +12,7 @@ public class Stock
         StoreId = storeId;
         ProductId = productId;
         Quantity = quantity;
-        TimeStamp = GenerateTimeStamp();
+       
 
     }
 
@@ -22,37 +22,43 @@ public class Stock
 
     public int Quantity { get; private set; }
     
-    public byte[] TimeStamp { get; private set; }
+    //public byte[] TimeStamp { get; private set; }
 
     public virtual Product Product { get; private set; } = null!;
 
     public virtual Store Store { get; private set; } = null!;
 
-    public bool TakeProduct(byte[] currentTimeStamp, int quantity)
+    public void TakeProduct(int quantity)
     {
-        if (!IsTimestampValid(currentTimeStamp))
-        {
+        Quantity -= quantity;
+        return;
+    }
+
+    //public bool TakeProduct(byte[] currentTimeStamp, int quantity)
+    //{
+    //    if (!IsTimestampValid(currentTimeStamp))
+    //    {
             
-            throw new Exception("Concurrency conflict occurred. Stock has been modified by another transaction.");
-        }
-        if (quantity <= Quantity)
-        {
-            Quantity -= quantity;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }//how to implment optimistic ocncurrency with ef 
+    //        throw new Exception("Concurrency conflict occurred. Stock has been modified by another transaction.");
+    //    }
+    //    if (quantity <= Quantity)
+    //    {
+    //        Quantity -= quantity;
+    //        return true;
+    //    }
+    //    else
+    //    {
+    //        return false;
+    //    }
+    //}//how to implment optimistic ocncurrency with ef 
 
-    private bool IsTimestampValid(byte[] currentTimestamp)
-    {
-        return StructuralComparisons.StructuralEqualityComparer.Equals(currentTimestamp, TimeStamp);
-    }
+    //private bool IsTimestampValid(byte[] currentTimestamp)
+    //{
+    //    return StructuralComparisons.StructuralEqualityComparer.Equals(currentTimestamp, TimeStamp);
+    //}
 
-    private byte[] GenerateTimeStamp()
-    {
-        return BitConverter.GetBytes(DateTime.UtcNow.Ticks);
-    }
+    //private byte[] GenerateTimeStamp()
+    //{
+    //    return BitConverter.GetBytes(DateTime.UtcNow.Ticks);
+    //}
 }

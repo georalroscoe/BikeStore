@@ -14,25 +14,36 @@ public class Order
     }
 
 
-    public Order( byte orderStatus, int storeId, int staffId) : this()
+    public Order( byte orderStatus, int storeId, int staffId, int customerId) : this()
     {
         OrderDate = DateTime.Now;
         RequiredDate = OrderDate.AddDays(5);
         OrderStatus = orderStatus;
         StoreId = storeId;
         StaffId = staffId;
+        CustomerId = customerId;
 
 
     }
 
-    public bool FillOrder(byte[] currentTimeStamp, Stock stock, int itemId, int productId,  int quantity, decimal discount, decimal listPrice)
-    {
-       bool validRetrieval = stock.TakeProduct(currentTimeStamp, quantity);
+    //public bool FilOrder(byte[] currentTimeStamp, Stock stock, int itemId, int productId,  int quantity, decimal discount, decimal listPrice)
+    //{
+    //   bool validRetrieval = stock.TakeProduct(currentTimeStamp, quantity);
       
-        OrderItem orderItem = new OrderItem(itemId, productId, quantity,  discount, listPrice);
-        OrderItems.Add(orderItem);
+    //    OrderItem orderItem = new OrderItem(itemId, productId, quantity,  discount, listPrice);
+    //    OrderItems.Add(orderItem);
         
-        return validRetrieval;
+    //    return validRetrieval;
+    //}
+
+    public void FillOrder(List<Stock> stocks, List<OrderItem> orderItems)
+    {
+        foreach(var orderItem in orderItems)
+        {
+            var stock = stocks.Where(x => x.ProductId == orderItem.ProductId).FirstOrDefault();
+            stock.TakeProduct(orderItem.Quantity);
+            OrderItems.Add(orderItem);
+        } 
     }
 
 
