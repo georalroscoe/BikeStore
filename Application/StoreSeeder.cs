@@ -85,10 +85,10 @@ namespace Application
                 {
                     int randomSkip = random.Next(1, 101);
 
-                    // Check if the random number is within the desired skip probability (e.g., 35%)
+                    
                     if (randomSkip <= 2)
                     {
-                        // Add the current iteration to the set of skipped iterations
+                       
                       
                         continue;
                     }

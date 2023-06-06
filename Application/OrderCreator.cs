@@ -15,6 +15,7 @@ using Dtos;
 
 using System.Xml;
 using Microsoft.EntityFrameworkCore;
+using Application.Factories;
 
 namespace Application
 { 
@@ -28,27 +29,34 @@ namespace Application
         private readonly IGenericRepository<Order> _orderRepo;
         private readonly IGenericRepository<OrderItem> _orderItemRepo;
         private readonly IGenericRepository<Product> _productRepo;
+        private readonly IStockStrategyFactory _stockStrategyFactory;
 
 
-        public OrderCreator (IUnitOfWork uow, IGenericRepository<Customer> customer, IGenericRepository<Staff> staff, IGenericRepository<Stock> stock, IGenericRepository<Order> orderRepo, IGenericRepository<OrderItem> orderItemRepo,
-            IGenericRepository<Product> productRepo) { 
-            _uow = uow; 
+
+        public OrderCreator(IUnitOfWork uow, IGenericRepository<Customer> customer, IGenericRepository<Staff> staff,
+            IGenericRepository<Stock> stock, IGenericRepository<Order> orderRepo, IGenericRepository<OrderItem> orderItemRepo,
+            IGenericRepository<Product> productRepo, IStockStrategyFactory stockStrategyFactory)
+        {
+            _uow = uow;
             _customerRepo = customer;
             _staffRepo = staff;
             _stockRepo = stock;
             _orderRepo = orderRepo;
             _orderItemRepo = orderItemRepo;
             _productRepo = productRepo;
-
-            
+            _stockStrategyFactory = stockStrategyFactory;
         }
 
         public ErrorOrderDto Add(OrderDto orderDto)
         {
             var staff = _staffRepo.GetById(orderDto.StaffId);
             var customer = _customerRepo.GetById(orderDto.CustomerId);
+            bool allStoresStrategy = orderDto.AllStoresStrategy;
+            IStockStrategy stockStrategy = _stockStrategyFactory.Create(allStoresStrategy);
 
-            var stocks = _stockRepo.Get(x => x.StoreId == staff.StoreId).ToList();
+
+            var stocks = stockStrategy.GetStocks(staff.StoreId);
+
             var products = _productRepo.Get().ToList();
             
             if (customer == null)

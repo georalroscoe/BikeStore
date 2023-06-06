@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using WebApi;
 using Application.Interfaces;
 using Application;
+using Application.Factories;
 
 var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
@@ -21,35 +22,28 @@ builder.Services.AddScoped<DbContext, BikeStoreContext>()
     .AddTransient<IGenericRepository<Stock>, GenericRepository<Stock>>()
     .AddTransient<IGenericRepository<Brand>, GenericRepository<Brand>>()
     .AddTransient<IGenericRepository<Store>, GenericRepository<Store>>()
-    .AddTransient<IGenericRepository<Stock>, GenericRepository<Stock>>()
     .AddTransient<IGenericRepository<Order>, GenericRepository<Order>>()
     .AddTransient<IGenericRepository<OrderItem>, GenericRepository<OrderItem>>()
-    .AddTransient<IGenericRepository<Customer>, GenericRepository<Customer>>()
     .AddTransient<ICreateProducts, ProductCreator>()
     .AddTransient<ICreateOrders, OrderCreator>()
     .AddTransient<ISeedBrands, BrandSeeder>()
     .AddTransient<ISeedCategories, CategorySeeder>()
     .AddTransient<ISeedProducts, ProductSeeder>()
     .AddTransient<ISeedCustomers, CustomerSeeder>()
-    .AddTransient<ISeedStores, StoreSeeder>();
-
-
-
-
-
+    .AddTransient<ISeedStores, StoreSeeder>()
+    .AddScoped<IStockStrategy, AllStoresStockStrategy>()
+    .AddScoped<IStockStrategy, StoreStockStrategy>()
+    .AddTransient<IStockStrategyFactory, StockStrategyFactory>();
 
 
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
-
-
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-
 var app = builder.Build();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

@@ -6,6 +6,8 @@
         
         public int CustomerId { get; set; }
 
+        public bool AllStoresStrategy { get; set; }
+
         public List<OrderProductDto> Products { get; set; } = new List<OrderProductDto>();
     }
 }

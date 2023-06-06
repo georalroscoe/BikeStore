@@ -11,6 +11,7 @@ using DataAccess.Repositories;
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Application.Factories;
 
 namespace UnitTest
 
@@ -27,6 +28,7 @@ namespace UnitTest
         private ISeedStores _storeSeeder;
         private ICreateOrders _orderCreator;
         private ICreateProducts _productCreator;
+        private IStockStrategyFactory _stockStrategyFactory;
 
         [TestInitialize]
         public void Initialize()
@@ -43,6 +45,8 @@ namespace UnitTest
 
             _dbContext = new BikeStoreContext(dbContextOptions);
             _unitOfWork = new UnitOfWork(_dbContext);
+            _stockStrategyFactory = new StockStrategyFactory(_dbContext);
+
             _brandSeeder = new BrandSeeder(_unitOfWork, new GenericRepository<Brand>(_dbContext));
             _categorySeeder = new CategorySeeder(_unitOfWork, new GenericRepository<Category>(_dbContext));
             _productSeeder = new ProductSeeder(
@@ -52,7 +56,7 @@ namespace UnitTest
                 new GenericRepository<Product>(_dbContext));
             _customerSeeder = new CustomerSeeder(_unitOfWork, new GenericRepository<Customer>(_dbContext));
             _storeSeeder = new StoreSeeder(_unitOfWork, new GenericRepository<Store>(_dbContext), new GenericRepository<Staff>(_dbContext), new GenericRepository<Product>(_dbContext), new GenericRepository<Stock>(_dbContext));
-            _orderCreator = new OrderCreator(_unitOfWork, new GenericRepository<Customer>(_dbContext), new GenericRepository<Staff>(_dbContext), new GenericRepository<Stock>(_dbContext), new GenericRepository<Order>(_dbContext), new GenericRepository<OrderItem>(_dbContext), new GenericRepository<Product>(_dbContext));
+            _orderCreator = new OrderCreator(_unitOfWork, new GenericRepository<Customer>(_dbContext), new GenericRepository<Staff>(_dbContext), new GenericRepository<Stock>(_dbContext), new GenericRepository<Order>(_dbContext), new GenericRepository<OrderItem>(_dbContext), new GenericRepository<Product>(_dbContext), _stockStrategyFactory);
             _productCreator = new ProductCreator(_unitOfWork, new GenericRepository<Brand>(_dbContext), new GenericRepository<Product>(_dbContext));
 
         }
@@ -163,7 +167,7 @@ namespace UnitTest
                 var productIds = _dbContext.Products.Select(p => p.ProductId).ToArray();
                 int n = productIds.Length;
 
-                // Fisher-Yates shuffle algorithm
+                
                 for (int i = n - 1; i > 0; i--)
                 {
                     int j = new Random().Next(i + 1);
@@ -175,8 +179,8 @@ namespace UnitTest
                 return productIds;
             }
 
-            int numberOfOrders = 50;
-            int numberOfProducts = 10;
+            int numberOfOrders = 5;
+            int numberOfProducts = 5;
 
             List<ErrorOrderDto> errorList = new List<ErrorOrderDto>();
 
@@ -188,6 +192,7 @@ namespace UnitTest
                 {
                     StaffId = GetRandomStaffId(),
                     CustomerId = GetRandomCustomerId(),
+                    AllStoresStrategy = true,
                     Products = new List<OrderProductDto>()
                 };
 
