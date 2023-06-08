@@ -35,4 +35,10 @@ public partial class OrderItem
     public virtual Order Order { get; private set; } = null!;
 
     public virtual Product Product { get; private set; } = null!;
+
+    public void SubstituteProduct(int productId)
+    {
+        ProductId = productId;
+        return;
+    }
 }

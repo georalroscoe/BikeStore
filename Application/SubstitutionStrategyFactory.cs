@@ -13,32 +13,30 @@ using System.Threading.Tasks;
 
 namespace Application
 {
-    public class StockStrategyFactory : IStockStrategyFactory
+    public class SubstitutionStrategyFactory : ISubstituteStrategyFactory
     {
-        //private readonly DbContext _context;
-        private readonly IGenericRepository<Stock> _stockRepo;
-
-        public StockStrategyFactory(IGenericRepository<Stock> stockRepo) //DbContext context)
+        private readonly IGenericRepository<Order> _orderRepo;
+        public SubstitutionStrategyFactory(IGenericRepository<Order> orderRepo) //DbContext context)
         {
             //_context = context;
-            _stockRepo = stockRepo;
+            _orderRepo = orderRepo;
         }
-        
-            
-        
 
-        public IStockStrategy Create(bool useAllStoresStrategy)
+
+
+
+        public ISubstituteStrategy Create(bool allowSubstitutions)
         {
             //var serviceProvider = _context.GetService<IServiceProvider>();
 
-            if (useAllStoresStrategy)
+            if (allowSubstitutions)
             {
-                return new AllStoresStockStrategy(_stockRepo);
+                return new SubstitutionStrategy(_orderRepo);
                 //return serviceProvider.GetRequiredService<AllStoresStockStrategy>();
             }
             else
             {
-                return new StoreStockStrategy(_stockRepo);
+                return new NoSubstitutionStrategy();
                 //return serviceProvider.GetRequiredService<StoreStockStrategy>();
             }
         }

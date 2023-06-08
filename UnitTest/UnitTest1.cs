@@ -29,6 +29,7 @@ namespace UnitTest
         private ICreateOrders _orderCreator;
         private ICreateProducts _productCreator;
         private IStockStrategyFactory _stockStrategyFactory;
+        private ISubstituteStrategyFactory _substitutionStrategyFactory;
 
         [TestInitialize]
         public void Initialize()
@@ -45,7 +46,9 @@ namespace UnitTest
 
             _dbContext = new BikeStoreContext(dbContextOptions);
             _unitOfWork = new UnitOfWork(_dbContext);
-            _stockStrategyFactory = new StockStrategyFactory(_dbContext);
+            _stockStrategyFactory = new StockStrategyFactory(new GenericRepository<Stock>(_dbContext));
+            _substitutionStrategyFactory = new SubstitutionStrategyFactory(new GenericRepository<Order>(_dbContext));
+
 
             _brandSeeder = new BrandSeeder(_unitOfWork, new GenericRepository<Brand>(_dbContext));
             _categorySeeder = new CategorySeeder(_unitOfWork, new GenericRepository<Category>(_dbContext));
@@ -56,7 +59,7 @@ namespace UnitTest
                 new GenericRepository<Product>(_dbContext));
             _customerSeeder = new CustomerSeeder(_unitOfWork, new GenericRepository<Customer>(_dbContext));
             _storeSeeder = new StoreSeeder(_unitOfWork, new GenericRepository<Store>(_dbContext), new GenericRepository<Staff>(_dbContext), new GenericRepository<Product>(_dbContext), new GenericRepository<Stock>(_dbContext));
-            _orderCreator = new OrderCreator(_unitOfWork, new GenericRepository<Customer>(_dbContext), new GenericRepository<Staff>(_dbContext), new GenericRepository<Stock>(_dbContext), new GenericRepository<Order>(_dbContext), new GenericRepository<OrderItem>(_dbContext), new GenericRepository<Product>(_dbContext), _stockStrategyFactory);
+            _orderCreator = new OrderCreator(_unitOfWork, new GenericRepository<Customer>(_dbContext), new GenericRepository<Staff>(_dbContext), new GenericRepository<Stock>(_dbContext), new GenericRepository<Order>(_dbContext), new GenericRepository<OrderItem>(_dbContext), new GenericRepository<Product>(_dbContext), _stockStrategyFactory, _substitutionStrategyFactory);
             _productCreator = new ProductCreator(_unitOfWork, new GenericRepository<Brand>(_dbContext), new GenericRepository<Product>(_dbContext));
 
         }
@@ -179,8 +182,8 @@ namespace UnitTest
                 return productIds;
             }
 
-            int numberOfOrders = 5;
-            int numberOfProducts = 5;
+            int numberOfOrders = 50;
+            int numberOfProducts = 50;
 
             List<ErrorOrderDto> errorList = new List<ErrorOrderDto>();
 
@@ -192,7 +195,7 @@ namespace UnitTest
                 {
                     StaffId = GetRandomStaffId(),
                     CustomerId = GetRandomCustomerId(),
-                    AllStoresStrategy = true,
+                    AllStoresStrategy = false,
                     Products = new List<OrderProductDto>()
                 };
 
@@ -207,7 +210,7 @@ namespace UnitTest
                     usedProductIds.Add(productId);
 
                     decimal discount = GetRandomDiscount();
-                    int quantity = new Random().Next(1, 6);
+                    int quantity = new Random().Next(30, 40);
 
                     orderDto.Products.Add(new OrderProductDto
                     {
@@ -219,10 +222,10 @@ namespace UnitTest
                 }
 
                 var errorDto = (_orderCreator.Add(orderDto));
-                if (errorDto.ItemErrors.Count > 0)
-                {
-                    errorList.Add(errorDto);
-                }
+                //if (errorDto.ItemErrors.Count > 0)
+                //{
+                //    errorList.Add(errorDto);
+                //}
             }
 
 

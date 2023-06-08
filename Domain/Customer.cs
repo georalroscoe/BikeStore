@@ -23,9 +23,13 @@ public class Customer
 
     }
 
-    public Order CreateOrder(OrderContainer orderContainer)
+    public Order? CreateOrder(OrderContainer orderContainer)
     {
-        var newOrder = new Order(1, orderContainer.StoreId, orderContainer.StaffId, CustomerId);
+        orderContainer.Validate();
+
+        if (!orderContainer.IsValid) return null;
+
+        var newOrder = new Order(Order.ValidOrder, orderContainer.StoreId, orderContainer.StaffId, CustomerId);
         Orders.Add(newOrder);
         newOrder.FillOrder(orderContainer.Stocks, orderContainer.OrderItems);
         return newOrder;

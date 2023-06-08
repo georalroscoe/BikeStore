@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,11 +40,59 @@ namespace Domain
             OrderItems.Add(orderItem);
         }
 
+        public void ClearErrors()
+        {
+            Errors = new Dictionary<OrderItem, string>();
+        }
+
+        public void SubstituteProduct(List<int> productIds) 
+        {
+            ClearErrors();
+            var matchingOrderItems = OrderItems.Where(x => productIds.Contains(x.ProductId)).ToList();
+
+            
+            foreach (var orderItem in matchingOrderItems)
+            {
+                Product product = Products.Where(x => x.ProductId == orderItem.ProductId).FirstOrDefault();
+
+                var potentialSubstitutions = Products.Where(x => x.ProductId != orderItem.ProductId &&
+                                                      ((x.BrandId == product.BrandId && x.ProductName == product.ProductName) ||
+                                                       (x.BrandId == product.BrandId) ||
+                                                       (x.ProductName == product.ProductName) ||
+                                                       (x.CategoryId == product.CategoryId) ||
+                                                       (x.ModelYear == product.ModelYear)))
+                                          .OrderByDescending(x =>
+                                          (x.BrandId == product.BrandId && x.ProductName == product.ProductName) ? 3 :
+                                          (x.BrandId == product.BrandId && x.CategoryId == product.CategoryId && x.ModelYear == product.ModelYear) ? 3 :
+                                          (x.BrandId == product.BrandId && x.CategoryId == product.CategoryId) ? 2 :
+                                          (x.CategoryId == product.CategoryId && x.ModelYear == product.ModelYear) ? 1 :
+                                          (x.CategoryId == product.CategoryId) ? 1 :
+                                          (x.BrandId == product.BrandId) ? 1 :
+                                          (x.ModelYear == product.ModelYear) ? 1 :
+                                          0)
+                                          .ToList();
+                foreach(var potentialSubstitution in potentialSubstitutions)
+                {
+
+                    Stock stock = Stocks.FirstOrDefault(x => x.ProductId == potentialSubstitution.ProductId && x.Quantity >= orderItem.Quantity);
+                    bool substitutionAlreadyExists = OrderItems.Any(item => item.ProductId == potentialSubstitution.ProductId);
+
+                    if (stock != null && !substitutionAlreadyExists)
+                    {
+                        orderItem.SubstituteProduct(potentialSubstitution.ProductId);
+                        break;
+                    }
+                }
+
+            }
+        }
+
         public void Validate()
         {
             foreach (OrderItem orderItem in OrderItems)
             {
-                var stock = Stocks.FirstOrDefault(x => x.ProductId == orderItem.ProductId);
+                Stock? stock = Stocks.FirstOrDefault(x => x.ProductId == orderItem.ProductId && x.Quantity >= orderItem.Quantity)
+                ?? Stocks.FirstOrDefault(x => x.ProductId == orderItem.ProductId);
 
                 if (orderItem.Quantity < 1)
                 {
@@ -69,9 +118,11 @@ namespace Domain
                     }
                     continue;
                 }
-
+               
                 if (stock.Quantity < orderItem.Quantity)
                 {
+                    
+                    
                     if (Errors.ContainsKey(orderItem))
                     {
                         Errors[orderItem] += $", Quantity in the stock is too low for {orderItem.ProductId}";

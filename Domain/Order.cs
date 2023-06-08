@@ -7,6 +7,7 @@ namespace Domain;
 
 public class Order
 {
+    public static byte ValidOrder = 1;
 
     private Order()
     {
@@ -40,9 +41,10 @@ public class Order
     {
         foreach(var orderItem in orderItems)
         {
-            var stock = stocks.Where(x => x.ProductId == orderItem.ProductId).FirstOrDefault();
+            var stock = stocks.Where(x => x.ProductId == orderItem.ProductId && x.Quantity >= orderItem.Quantity).FirstOrDefault();
             stock.TakeProduct(orderItem.Quantity);
             OrderItems.Add(orderItem);
+            //merge order items with the same productid or find diff product to prevent null errpr
         } 
     }
 

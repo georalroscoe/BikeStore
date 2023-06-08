@@ -30,12 +30,13 @@ namespace Application
         private readonly IGenericRepository<OrderItem> _orderItemRepo;
         private readonly IGenericRepository<Product> _productRepo;
         private readonly IStockStrategyFactory _stockStrategyFactory;
+        private readonly ISubstituteStrategyFactory _substituteStrategyFactory;
 
 
 
         public OrderCreator(IUnitOfWork uow, IGenericRepository<Customer> customer, IGenericRepository<Staff> staff,
             IGenericRepository<Stock> stock, IGenericRepository<Order> orderRepo, IGenericRepository<OrderItem> orderItemRepo,
-            IGenericRepository<Product> productRepo, IStockStrategyFactory stockStrategyFactory)
+            IGenericRepository<Product> productRepo, IStockStrategyFactory stockStrategyFactory, ISubstituteStrategyFactory substituteStrategyFactory)
         {
             _uow = uow;
             _customerRepo = customer;
@@ -45,14 +46,21 @@ namespace Application
             _orderItemRepo = orderItemRepo;
             _productRepo = productRepo;
             _stockStrategyFactory = stockStrategyFactory;
+            _substituteStrategyFactory = substituteStrategyFactory;
         }
 
         public ErrorOrderDto Add(OrderDto orderDto)
         {
+
+
+            //by state that customer is in
+            //find store with most of that in, or at least the best one
+            //find a substition product with similar features
             var staff = _staffRepo.GetById(orderDto.StaffId);
             var customer = _customerRepo.GetById(orderDto.CustomerId);
             bool allStoresStrategy = orderDto.AllStoresStrategy;
             IStockStrategy stockStrategy = _stockStrategyFactory.Create(allStoresStrategy);
+            
 
 
             var stocks = stockStrategy.GetStocks(staff.StoreId);
@@ -66,30 +74,6 @@ namespace Application
             }
 
 
-            //Load Order container with all info that you need
-
-            //put all stocks in it for that store
-            //put all products in it and staff and customer
-
-
-
-            //var order = customer.CreateOrder(orderContainer); // hold info as well so can validate
-            //if (!orderContainer.IsValid)
-            //{
-            //    return Dtos with errors
-            //}
-
-            //return Dtos from order;
-
-            //put 100k orders into azure database 
-            //some customers go to an actual store and get served by staff member but they are introducing a website where they can fill an iorder with stcok from any of the stores (not a store specific check)
-            //Look up strategy pattern (for when theres multiple cases) - 
-            //look up blocking queue 
-            //look up changing the behaviour for different cases
-
-
-
-
             OrderContainer orderContainer = new OrderContainer(staff.StaffId, staff.StoreId, stocks, products);
 
 
@@ -98,35 +82,25 @@ namespace Application
             {               
                 orderContainer.AddOrderItem(orderProductDto.ItemId, orderProductDto.ProductId, orderProductDto.Quantity, orderProductDto.Discount);
             }
-            orderContainer.Validate();
 
 
-            ErrorOrderDto errorDto = new ErrorOrderDto
+            ErrorOrderDto crudDto = null;
+            Order? order = customer.CreateOrder(orderContainer);
+
+
+            if (order == null)
             {
-                StaffId = orderContainer.StaffId,
-                CustomerId = customer.CustomerId
-                //order identifier needed
-               
-            };
-            if (!orderContainer.IsValid)
-            {
-
-                errorDto.ItemErrors = orderContainer.Errors.Select(kv => new ErrorOrderItemDto
-                {
-                    ProductId = kv.Key.ProductId,
-                    Error = kv.Value
-                }).ToList();
-                
-                return errorDto;
+                ISubstituteStrategy substituteStrategy = _substituteStrategyFactory.Create(true);
+                crudDto = substituteStrategy.SubstituteProducts(orderContainer, customer);
             }
 
-            Order order = customer.CreateOrder(orderContainer);
-            _orderRepo.Insert(order);
-
+            else
+            {
+                _orderRepo.Insert(order);
+            }
             try
             {
                 
-
                 _uow.Save();
             }
             catch (DbUpdateConcurrencyException ex)
@@ -151,7 +125,7 @@ namespace Application
 
 
 
-            return errorDto;
+            return crudDto;
 
            
           

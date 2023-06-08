@@ -33,7 +33,10 @@ builder.Services.AddScoped<DbContext, BikeStoreContext>()
     .AddTransient<ISeedStores, StoreSeeder>()
     .AddScoped<IStockStrategy, AllStoresStockStrategy>()
     .AddScoped<IStockStrategy, StoreStockStrategy>()
-    .AddTransient<IStockStrategyFactory, StockStrategyFactory>();
+    .AddTransient<IStockStrategyFactory, StockStrategyFactory>()
+    .AddScoped<ISubstituteStrategy, SubstitutionStrategy>()
+    .AddScoped<ISubstituteStrategy, NoSubstitutionStrategy>()
+    .AddTransient<ISubstituteStrategyFactory, SubstitutionStrategyFactory>();
 
 
 
