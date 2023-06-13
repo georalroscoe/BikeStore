@@ -17,7 +17,7 @@ namespace DataAccess.Mapping
         {
 
 
-            builder.HasKey(e => e.CategoryId).HasName("PK__categori__D54EE9B4F5D33A4B");
+            builder.HasKey(e => e.CategoryId);
 
             builder.ToTable("categories", "production");
 

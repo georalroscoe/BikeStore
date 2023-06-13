@@ -6,7 +6,7 @@ public class StockMap : IEntityTypeConfiguration<Stock>
 {
     public void Configure(EntityTypeBuilder<Stock> builder, string schema)
     {
-        builder.HasKey(e => new { e.StoreId, e.ProductId }).HasName("PK__stocks__E68284D382FF5216");
+        builder.HasKey(e => new { e.StoreId, e.ProductId });
 
         builder.ToTable("stocks", "production");
 

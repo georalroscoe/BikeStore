@@ -16,8 +16,8 @@ namespace DataAccess.Mapping
         public void Configure(EntityTypeBuilder<Brand> builder, string schema)
         {
 
-           
-                builder.HasKey(e => e.BrandId).HasName("PK__brands__5E5A8E27C3072685");
+
+            builder.HasKey(e => e.BrandId);
 
                 builder.ToTable("brands", "production");
 

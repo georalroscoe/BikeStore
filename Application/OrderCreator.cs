@@ -84,14 +84,20 @@ namespace Application
             }
 
 
-            ErrorOrderDto crudDto = null;
+            ErrorOrderDto crudDto = new ErrorOrderDto
+            {
+                StaffId = orderContainer.StaffId,
+                CustomerId = orderContainer.StoreId
+                //order identifier needed
+
+            };
             Order? order = customer.CreateOrder(orderContainer);
 
 
             if (order == null)
             {
                 ISubstituteStrategy substituteStrategy = _substituteStrategyFactory.Create(true);
-                crudDto = substituteStrategy.SubstituteProducts(orderContainer, customer);
+                substituteStrategy.SubstituteProducts(orderContainer, customer, crudDto);
             }
 
             else

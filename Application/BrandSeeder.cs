@@ -34,7 +34,7 @@ namespace Application
 
         public void SeedBrands(int numberOfBrands)
         {
-            for (int i = 0; i < numberOfBrands; i++)
+            for (int i = 6; i < numberOfBrands; i++)
             {
                 
                 string brandName = "Brand" + $"{i}"; 

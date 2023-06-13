@@ -17,7 +17,7 @@ namespace DataAccess.Mapping
         {
 
 
-            builder.HasKey(e => e.OrderId).HasName("PK__orders__4659622972C4BF33");
+            builder.HasKey(e => e.OrderId);
 
             builder.ToTable("orders", "sales");
 

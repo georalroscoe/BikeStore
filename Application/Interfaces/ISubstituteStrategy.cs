@@ -10,7 +10,7 @@ namespace Application.Interfaces
 {
     public interface ISubstituteStrategy
     {
-        ErrorOrderDto SubstituteProducts(OrderContainer orderContainer, Customer customer);
+        void SubstituteProducts(OrderContainer orderContainer, Customer customer, ErrorOrderDto crudDto);
     }
 
 }

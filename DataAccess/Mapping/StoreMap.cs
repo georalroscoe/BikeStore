@@ -16,7 +16,7 @@ namespace DataAccess.Mapping
         public void Configure(EntityTypeBuilder<Store> builder, string schema)
         {
 
-            builder.HasKey(e => e.StoreId).HasName("PK__stores__A2F2A30CE04AEE10");
+            builder.HasKey(e => e.StoreId);
 
             builder.ToTable("stores", "sales");
 

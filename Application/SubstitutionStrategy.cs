@@ -21,16 +21,10 @@ namespace Application
         //        _stockRepo = stockRepo;
         //    }
 
-        public ErrorOrderDto SubstituteProducts(OrderContainer orderContainer, Customer customer)
+        public void SubstituteProducts(OrderContainer orderContainer, Customer customer, ErrorOrderDto crudDto)
         {
 
-            ErrorOrderDto crudDto = new ErrorOrderDto
-            {
-                StaffId = orderContainer.StaffId,
-                CustomerId = orderContainer.StoreId
-                //order identifier needed
-
-            };
+            
             if (!orderContainer.IsValid)
             {
 
@@ -40,9 +34,9 @@ namespace Application
                     Error = kv.Value
                 }).ToList();
 
-                return crudDto;
+                
             }
-            return null;
+            
 
         }
     }
@@ -57,7 +51,7 @@ namespace Application
         }
 
 
-        public ErrorOrderDto SubstituteProducts(OrderContainer orderContainer, Customer customer)
+        public void SubstituteProducts(OrderContainer orderContainer, Customer customer, ErrorOrderDto crudDto)
             {
 
                 var productIds = orderContainer.Errors.Select(kv => kv.Key.ProductId).ToList();
@@ -68,7 +62,10 @@ namespace Application
             Order? order = customer.CreateOrder(orderContainer);
             if (order == null)
             {
-                throw new Exception("problem with code or no quantity anywhere");
+                NoSubstitutionStrategy noSubstitutionStrategy = new NoSubstitutionStrategy();
+                noSubstitutionStrategy.SubstituteProducts(orderContainer, customer, crudDto);
+                //call method here
+                return;
                 //call the other method and return dto, identify whats been substituted as well
             }
             else
@@ -76,7 +73,7 @@ namespace Application
                 _orderRepo.Insert(order);
             }
 
-                return null;
+                
 
 
             }

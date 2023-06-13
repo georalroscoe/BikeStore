@@ -68,7 +68,7 @@ namespace UnitTest
         public void aFillDatabase()
         {
 
-            //int numberOfBrands = 5;
+            //int numberOfBrands = 50;
 
             //_brandSeeder.SeedBrands(numberOfBrands);
 
@@ -76,7 +76,7 @@ namespace UnitTest
             //var addedBrands = _dbContext.Brands.ToList();
 
 
-            //Assert.AreEqual(numberOfBrands, addedBrands.Count);
+
 
 
             //int numberOfCategories = 5;
@@ -91,18 +91,18 @@ namespace UnitTest
             ////Assert.AreEqual(numberOfCategories, addedCategories.Count);
 
 
-            //int numberOfProducts = 100;
+            //int numberOfProducts = 50;
 
 
             //_productSeeder.SeedProducts(numberOfProducts);
 
-            //int numberOfCustomers = 400;
+            //int numberOfCustomers = 9000;
 
             //_customerSeeder.SeedCustomers(numberOfCustomers);
 
             //var addedCustomers = _dbContext.Customers.ToList();
 
-            //int numberOfStores = 30;
+            //int numberOfStores = 100;
 
             //_storeSeeder.SeedStores(numberOfStores);
 
@@ -110,10 +110,19 @@ namespace UnitTest
 
         }
         //[TestMethod]
-        //public void ClearCustomerTable()
+        //public void clearcustomertable()
         //{
-        //    var customers = _dbContext.Customers.ToList();
-        //    _dbContext.Customers.RemoveRange(customers);
+        //    var customers = _dbContext.Stores.ToList();
+        //    _dbContext.Stores.RemoveRange(customers);
+
+        //    var custome = _dbContext.Stocks.ToList();
+        //    _dbContext.Stocks.RemoveRange(custome);
+
+        //    var customer = _dbContext.Stocks.ToList();
+        //    _dbContext.Stocks.RemoveRange(customer);
+
+
+
         //    _dbContext.SaveChanges();
         //}
 
@@ -170,7 +179,7 @@ namespace UnitTest
                 var productIds = _dbContext.Products.Select(p => p.ProductId).ToArray();
                 int n = productIds.Length;
 
-                
+
                 for (int i = n - 1; i > 0; i--)
                 {
                     int j = new Random().Next(i + 1);
@@ -182,8 +191,8 @@ namespace UnitTest
                 return productIds;
             }
 
-            int numberOfOrders = 50;
-            int numberOfProducts = 50;
+            int numberOfOrders = 4;
+            int numberOfProducts = 8;
 
             List<ErrorOrderDto> errorList = new List<ErrorOrderDto>();
 
@@ -195,7 +204,7 @@ namespace UnitTest
                 {
                     StaffId = GetRandomStaffId(),
                     CustomerId = GetRandomCustomerId(),
-                    AllStoresStrategy = false,
+                    AllStoresStrategy = true, 
                     Products = new List<OrderProductDto>()
                 };
 
@@ -210,7 +219,7 @@ namespace UnitTest
                     usedProductIds.Add(productId);
 
                     decimal discount = GetRandomDiscount();
-                    int quantity = new Random().Next(30, 40);
+                    int quantity = new Random().Next(1, 40);
 
                     orderDto.Products.Add(new OrderProductDto
                     {
@@ -222,10 +231,10 @@ namespace UnitTest
                 }
 
                 var errorDto = (_orderCreator.Add(orderDto));
-                //if (errorDto.ItemErrors.Count > 0)
-                //{
-                //    errorList.Add(errorDto);
-                //}
+                if (errorDto.ItemErrors.Count > 0)
+                {
+                    errorList.Add(errorDto);
+                }
             }
 
 

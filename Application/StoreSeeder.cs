@@ -81,7 +81,7 @@ namespace Application
 
                
 
-                for (int i = 6; i <= 607; i++)
+                for (int i = 608; i <= 3107; i++)
                 {
                     int randomSkip = random.Next(1, 101);
 
@@ -94,7 +94,7 @@ namespace Application
                     }
                     
                     //int randomProductId = GetRandomProductId();
-                    int randomQuantity = random.Next(1, 51);
+                    int randomQuantity = random.Next(1, 81);
 
                     Stock? stock = store.AddStock(i, randomQuantity);
 
