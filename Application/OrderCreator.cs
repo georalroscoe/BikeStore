@@ -52,6 +52,8 @@ namespace Application
         public ErrorOrderDto Add(OrderDto orderDto)
         {
 
+            //write software to solve sudoku, befroe writing anything come up with the game plan. this exercise is about the logic. interested in how i would break down the data structure
+            //try and make the data structure as simple as possible 
 
             //by state that customer is in
             //find store with most of that in, or at least the best one
